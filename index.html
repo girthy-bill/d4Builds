@@ -199,18 +199,52 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 .paragon-grid-wrap::-webkit-scrollbar{width:6px;height:6px;}
 .paragon-grid-wrap::-webkit-scrollbar-thumb{background:rgba(180,80,10,0.25);}
 .paragon-grid{display:inline-grid;gap:2px;}
-.pnode{width:20px;height:20px;border:1px solid rgba(180,60,40,0.14);cursor:pointer;transition:all .1s;display:flex;align-items:center;justify-content:center;font-size:7px;font-family:var(--font-m);}
-.pnode:hover{border-color:rgba(212,168,75,0.4);}
-.pnode.normal{background:rgba(180,60,40,0.05);}
-.pnode.magic{background:rgba(80,80,180,0.1);border-color:rgba(80,80,220,0.2);}
-.pnode.rare{background:rgba(180,180,0,0.08);border-color:rgba(200,200,0,0.18);}
-.pnode.legendary{background:rgba(180,80,20,0.1);border-color:rgba(220,120,40,0.25);}
-.pnode.glyph{border-radius:50%;background:rgba(198,40,40,0.12);border-color:rgba(198,40,40,0.3);color:var(--red);}
-.pnode.start{border-radius:50%;background:rgba(212,168,75,0.15);border-color:rgba(212,168,75,0.4);}
-.pnode.active{background:rgba(212,168,75,0.18);border-color:rgba(212,168,75,0.5);}
-.pnode.active.magic{background:rgba(100,100,220,0.2);border-color:rgba(120,120,255,0.5);}
-.pnode.active.rare{background:rgba(200,200,0,0.15);border-color:rgba(220,220,0,0.45);}
-.pnode.active.glyph{background:rgba(198,40,40,0.25);border-color:rgba(198,40,40,0.6);}
+.pnode{
+  width:22px;height:22px;
+  border:1px solid rgba(180,60,40,0.2);
+  cursor:pointer;transition:all .12s;
+  display:flex;align-items:center;justify-content:center;
+  font-size:8px;font-family:var(--font-m);
+  position:relative;
+}
+.pnode:hover{ transform:scale(1.15); z-index:2; }
+/* Normal — dim red */
+.pnode.normal{ background:rgba(40,10,10,0.7); border-color:rgba(180,60,40,0.2); }
+.pnode.normal:hover{ border-color:rgba(212,168,75,0.5);background:rgba(60,20,10,0.8); }
+/* Magic — blue */
+.pnode.magic{ background:rgba(20,20,80,0.7); border-color:rgba(80,80,220,0.4); }
+.pnode.magic:hover{ border-color:rgba(120,120,255,0.7); }
+/* Rare — yellow */
+.pnode.rare{ background:rgba(60,60,0,0.7); border-color:rgba(200,200,0,0.4); }
+.pnode.rare:hover{ border-color:rgba(255,255,0,0.6); }
+/* Legendary — orange */
+.pnode.legendary{ background:rgba(80,30,0,0.7); border-color:rgba(220,120,40,0.5); }
+.pnode.legendary:hover{ border-color:rgba(255,150,50,0.8); }
+/* Glyph socket — red circle */
+.pnode.glyph{
+  border-radius:50%;
+  background:rgba(80,0,0,0.8);
+  border-color:rgba(198,40,40,0.6);
+  border-width:2px;
+  color:rgba(198,40,40,0.8);
+  font-size:9px;
+}
+.pnode.glyph:hover{ border-color:var(--red); background:rgba(120,0,0,0.8); }
+/* Start node */
+.pnode.start{
+  border-radius:50%;
+  background:rgba(212,168,75,0.2);
+  border-color:rgba(212,168,75,0.6);
+  border-width:2px;
+  color:rgba(212,168,75,0.8);
+}
+/* ACTIVE states — bright and obvious */
+.pnode.active.normal{ background:rgba(212,168,75,0.25); border-color:rgba(212,168,75,0.7); border-width:2px; }
+.pnode.active.magic{ background:rgba(80,80,220,0.3); border-color:rgba(120,120,255,0.8); border-width:2px; }
+.pnode.active.rare{ background:rgba(200,200,0,0.25); border-color:rgba(255,255,0,0.8); border-width:2px; }
+.pnode.active.legendary{ background:rgba(220,120,40,0.3); border-color:rgba(255,160,60,0.9); border-width:2px; }
+.pnode.active.glyph{ background:rgba(198,40,40,0.4); border-color:var(--red); border-width:2px; color:var(--red); }
+.pnode.active.start{ background:rgba(212,168,75,0.35); border-color:var(--gold); border-width:2px; }
 
 .paragon-legend{padding:8px 16px;border-top:1px solid var(--border2);display:flex;gap:14px;flex-shrink:0;background:var(--bg2);}
 .legend-item{display:flex;align-items:center;gap:5px;font-family:var(--font-m);font-size:9px;color:var(--text3);}
@@ -444,11 +478,12 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
           <div class="paragon-grid" id="paragon-grid"></div>
         </div>
         <div class="paragon-legend">
-          <div class="legend-item"><div class="legend-swatch" style="background:rgba(180,60,40,0.05);border-color:rgba(180,60,40,0.14)"></div>Normal</div>
-          <div class="legend-item"><div class="legend-swatch" style="background:rgba(80,80,180,0.1);border-color:rgba(80,80,220,0.2)"></div>Magic</div>
-          <div class="legend-item"><div class="legend-swatch" style="background:rgba(180,180,0,0.08);border-color:rgba(200,200,0,0.18)"></div>Rare</div>
-          <div class="legend-item"><div class="legend-swatch" style="background:rgba(180,80,20,0.1);border-color:rgba(220,120,40,0.25)"></div>Legendary</div>
-          <div class="legend-item"><div class="legend-swatch" style="background:rgba(198,40,40,0.12);border-color:rgba(198,40,40,0.3);border-radius:50%"></div>Glyph</div>
+          <div class="legend-item"><div class="legend-swatch" style="background:rgba(40,10,10,0.7);border-color:rgba(180,60,40,0.3)"></div>Normal</div>
+          <div class="legend-item"><div class="legend-swatch" style="background:rgba(20,20,80,0.7);border-color:rgba(80,80,220,0.5)"></div>◆ Magic</div>
+          <div class="legend-item"><div class="legend-swatch" style="background:rgba(60,60,0,0.7);border-color:rgba(200,200,0,0.5)"></div>★ Rare</div>
+          <div class="legend-item"><div class="legend-swatch" style="background:rgba(80,30,0,0.7);border-color:rgba(220,120,40,0.6)"></div>◈ Legendary</div>
+          <div class="legend-item"><div class="legend-swatch" style="background:rgba(80,0,0,0.8);border-color:rgba(198,40,40,0.6);border-radius:50%"></div>⬡ Glyph</div>
+          <div class="legend-item"><div class="legend-swatch" style="background:rgba(212,168,75,0.25);border-color:rgba(212,168,75,0.7)"></div>Active</div>
         </div>
       </div>
     </div>
@@ -473,7 +508,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
 
   <div class="statusbar">
     <div class="status-dot"></div>
-    <div class="status-text" id="status-text">D4 Build Manager · Season 7</div>
+    <div class="status-text" id="status-text">D4 Build Manager · Season 13</div>
   </div>
 </div>
 
@@ -500,9 +535,13 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
     <div class="modal-field">
       <label class="modal-label">Season</label>
       <select class="select-field" id="modal-season">
-        <option value="S7">Season 7</option>
+        <option value="S13">Season 13 — Lord of Hatred</option>
+        <option value="S12">Season 12 — Slaughter</option>
+        <option value="S11">Season 11 — Divine Intervention</option>
+        <option value="S10">Season 10</option>
+        <option value="S9">Season 9</option>
         <option value="S8">Season 8</option>
-        <option value="Eternal">Eternal</option>
+        <option value="Eternal">Eternal Realm</option>
       </select>
     </div>
     <div class="modal-actions">
@@ -512,10 +551,23 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
   </div>
 </div>
 
+<!-- ══ SKILL PICKER MODAL ══ -->
+<div class="modal-overlay" id="skill-modal-overlay" onclick="handleSkillModalClick(event)">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-title">Choose Skill</div>
+    <input class="input-field" id="skill-search" type="text" placeholder="Search skills..." oninput="filterSkillPicker()" style="margin-bottom:14px"/>
+    <div id="skill-picker-list" style="max-height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:3px"></div>
+    <div class="modal-actions" style="margin-top:14px">
+      <button class="btn-ghost" onclick="closeSkillModal()">Cancel</button>
+      <button class="btn-ghost" style="color:var(--red);border-color:rgba(198,40,40,0.3)" onclick="clearSkillSlot()">Clear Slot</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-const WORKER = 'winter-thunder-2fec.kay-williamluke.workers.dev'; // Replace with your D4 Builds Worker URL
+const WORKER = 'https://YOUR_WORKER_URL.workers.dev'; // Replace with your D4 Builds Worker URL
 const BUILDS_KEY = 'd4builds';
 
 // ── Class data ────────────────────────────────────────
@@ -754,18 +806,40 @@ const SKILL_TREES = {
 
 // Paragon board layout (21x21 grid with node types)
 // n=normal, m=magic, r=rare, l=legendary, g=glyph, s=start, _=empty
-function genParagonLayout() {
+function genParagonLayout(seed) {
+  // Seeded random so board is always the same for a given board id
+  let s = seed || 12345;
+  function rand() { s = (s * 1103515245 + 12345) & 0x7fffffff; return s / 0x7fffffff; }
+
   const size = 21;
-  const types = ['n','n','n','n','n','m','m','m','r','r','l'];
+  const cx = 10, cy = 10;
   const grid = [];
+
+  // Pre-define special node positions for a realistic D4-like board
+  const glyphPos = [[3,10],[10,3],[10,17],[17,10]]; // 4 glyph sockets
+  const legendaryPos = [[5,5],[5,15],[15,5],[15,15],[2,10],[10,2],[18,10],[10,18]]; // legendary nodes
+  const rarePos = [[7,7],[7,13],[13,7],[13,13],[4,10],[10,4],[16,10],[10,16],[7,10],[10,7],[13,10],[10,13]];
+  const magicPos = [];
+  // Generate magic nodes scattered throughout
+  for(let r=0;r<size;r++) for(let c=0;c<size;c++) {
+    if((r+c)%3===0 && rand()<0.4) magicPos.push([r,c]);
+  }
+
+  function nodeType(r,c) {
+    if(r===cx&&c===cy) return 's';
+    if(glyphPos.some(p=>p[0]===r&&p[1]===c)) return 'g';
+    if(legendaryPos.some(p=>p[0]===r&&p[1]===c)) return 'l';
+    if(rarePos.some(p=>p[0]===r&&p[1]===c)) return 'r';
+    if(magicPos.some(p=>p[0]===r&&p[1]===c)) return 'm';
+    return 'n';
+  }
+
   for (let row=0; row<size; row++) {
     const r = [];
     for (let col=0; col<size; col++) {
-      const d = Math.sqrt(Math.pow(row-10,2)+Math.pow(col-10,2));
-      if (d > 10.5) { r.push('_'); continue; }
-      if (row===10 && col===10) { r.push('s'); continue; }
-      if ((row===5&&col===10)||(row===15&&col===10)||(row===10&&col===5)||(row===10&&col===15)) { r.push('g'); continue; }
-      r.push(types[Math.floor(Math.random()*types.length)]);
+      const d = Math.sqrt(Math.pow(row-cx,2)+Math.pow(col-cy,2));
+      if (d > 10.2) { r.push('_'); continue; }
+      r.push(nodeType(row,col));
     }
     grid.push(r);
   }
@@ -845,7 +919,7 @@ function goHome() {
   document.getElementById('btn-back').style.display='none';
   document.getElementById('btn-new-build').style.display='';
   document.getElementById('topbar-build-name').textContent='';
-  document.getElementById('status-text').textContent='D4 Build Manager · Season 7';
+  document.getElementById('status-text').textContent='D4 Build Manager · Season 13';
   renderHome();
 }
 
@@ -905,7 +979,10 @@ function countGearSlots(b) {
 
 function deleteBuild(e,id) {
   e.stopPropagation();
-  builds=builds.filter(b=>b.id!==id);
+  const b=builds.find(x=>x.id===id);
+  if(!b) return;
+  if(!confirm('Delete "'+b.name+'"? This cannot be undone.')) return;
+  builds=builds.filter(x=>x.id!==id);
   saveBuilds(); renderHome();
   showToast('Build deleted');
 }
@@ -1036,14 +1113,67 @@ function saveAffixField(idx, val) {
   saveBuilds();
 }
 
+let pickingSkillSlot = null;
+
 function selectSkill(idx) {
   const b=getCurrentBuild();
   if(!b) return;
-  const name=prompt('Skill name (leave blank to clear):');
-  if(name===null) return;
+  pickingSkillSlot=idx;
+  openSkillModal();
+}
+
+function openSkillModal() {
+  const b=getCurrentBuild();
+  if(!b) return;
+  document.getElementById('skill-search').value='';
+  document.getElementById('skill-modal-overlay').classList.add('open');
+  filterSkillPicker();
+  setTimeout(()=>document.getElementById('skill-search').focus(),100);
+}
+
+function closeSkillModal() {
+  document.getElementById('skill-modal-overlay').classList.remove('open');
+  pickingSkillSlot=null;
+}
+
+function handleSkillModalClick(e) {
+  if(e.target===document.getElementById('skill-modal-overlay')) closeSkillModal();
+}
+
+function filterSkillPicker() {
+  const b=getCurrentBuild();
+  if(!b) return;
+  const q=(document.getElementById('skill-search').value||'').toLowerCase();
+  const tree=SKILL_TREES[b.class]||[];
+  const list=document.getElementById('skill-picker-list');
+  let html='';
+  tree.forEach(cluster=>{
+    const nodes=cluster.nodes.filter(n=>!q||n.name.toLowerCase().includes(q));
+    if(!nodes.length) return;
+    html+=`<div style="font-family:var(--font-m);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);padding:6px 0 4px">${cluster.cluster}</div>`;
+    nodes.forEach(n=>{
+      html+=`<div onclick="pickSkill('${n.id}','${n.name.replace(/'/g,"\'")}'))" style="padding:8px 12px;background:var(--bg3);border:1px solid var(--border2);cursor:pointer;font-size:13px;color:var(--text2);transition:all .1s" onmouseover="this.style.borderColor='rgba(212,168,75,0.4)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='';this.style.color=''">
+        ${n.name} <span style="font-family:var(--font-m);font-size:9px;color:var(--text3)">— max ${n.max} pts</span>
+      </div>`;
+    });
+  });
+  list.innerHTML=html||'<div style="color:var(--text3);font-style:italic;padding:12px">No skills found</div>';
+}
+
+function pickSkill(id, name) {
+  const b=getCurrentBuild();
+  if(!b||pickingSkillSlot===null) return;
   if(!b.skills) b.skills=Array(6).fill(null);
-  b.skills[idx]=name.trim()?{name:name.trim()}:null;
-  renderSkillsBar(); saveBuilds();
+  b.skills[pickingSkillSlot]={id,name};
+  renderSkillsBar(); saveBuilds(); closeSkillModal();
+}
+
+function clearSkillSlot() {
+  const b=getCurrentBuild();
+  if(!b||pickingSkillSlot===null) return;
+  if(!b.skills) b.skills=Array(6).fill(null);
+  b.skills[pickingSkillSlot]=null;
+  renderSkillsBar(); saveBuilds(); closeSkillModal();
 }
 
 // ── Skill Tree ───────────────────────────────────────────
@@ -1086,53 +1216,87 @@ function cycleSkillPts(id, max) {
 }
 
 function renderTreeSVG(b, tree) {
-  const nodeR=22, hGap=100, vGap=80;
-  const cols=4;
-  let nodes=[], edges=[];
-  let row=0;
-  tree.forEach((cluster,ci)=>{
-    cluster.nodes.forEach((node,ni)=>{
-      const col=ni%cols;
-      if(ni>0&&col===0) row++;
-      const x=60+col*hGap;
-      const y=50+row*vGap+(ci>0?20:0);
-      nodes.push({...node, x, y, pts:b.skillPoints&&b.skillPoints[node.id]||0, cluster:cluster.cluster});
-      if(ni>0) {
-        const prev=nodes[nodes.length-2];
-        if(prev.cluster===cluster.cluster) edges.push({x1:prev.x,y1:prev.y,x2:x,y2:y});
-      }
-    });
-    row++;
-  });
-  const maxY=Math.max(...nodes.map(n=>n.y))+60;
-  const maxX=Math.max(...nodes.map(n=>n.x))+60;
-  const svgW=Math.max(500,maxX);
-  const svgH=Math.max(400,maxY);
+  const nodeR=26;
+  const clusterGap=120; // vertical between clusters
+  const nodeSpacing=90; // horizontal between nodes
+  const padding=60;
+  let allNodes=[], allEdges=[];
+  let prevClusterNodes=[];
 
-  let svgHTML=`<svg viewBox="0 0 ${svgW} ${svgH}" width="${svgW}" height="${svgH}" xmlns="http://www.w3.org/2000/svg" style="display:block">`;
-  edges.forEach(e=>{
-    svgHTML+=`<line x1="${e.x1}" y1="${e.y1}" x2="${e.x2}" y2="${e.y2}" stroke="rgba(180,60,40,0.2)" stroke-width="1.5"/>`;
+  tree.forEach((cluster,ci)=>{
+    const count=cluster.nodes.length;
+    const totalW=(count-1)*nodeSpacing;
+    const startX=padding+Math.max(0,(4*nodeSpacing-totalW)/2);
+    const y=padding+ci*clusterGap;
+    const clusterNodes=cluster.nodes.map((node,ni)=>{
+      const x=startX+ni*nodeSpacing;
+      const pts=b.skillPoints&&b.skillPoints[node.id]||0;
+      return {...node,x,y,pts,cluster:cluster.cluster};
+    });
+    // Edges within cluster (chain)
+    for(let i=1;i<clusterNodes.length;i++) {
+      allEdges.push({x1:clusterNodes[i-1].x,y1:clusterNodes[i-1].y,x2:clusterNodes[i].x,y2:clusterNodes[i].y,active:clusterNodes[i-1].pts>0&&clusterNodes[i].pts>0});
+    }
+    // Edges from prev cluster (connect first nodes)
+    if(prevClusterNodes.length) {
+      const from=prevClusterNodes[Math.floor(prevClusterNodes.length/2)];
+      const to=clusterNodes[Math.floor(clusterNodes.length/2)];
+      allEdges.push({x1:from.x,y1:from.y,x2:to.x,y2:to.y,active:from.pts>0&&to.pts>0,inter:true});
+    }
+    allNodes=allNodes.concat(clusterNodes);
+    prevClusterNodes=clusterNodes;
   });
-  nodes.forEach(n=>{
+
+  const svgW=Math.max(500,padding*2+4*nodeSpacing);
+  const svgH=padding*2+tree.length*clusterGap;
+
+  let svg=`<svg viewBox="0 0 ${svgW} ${svgH}" width="${svgW}" height="${svgH}" xmlns="http://www.w3.org/2000/svg" style="display:block;min-width:${svgW}px">`;
+
+  // Cluster labels
+  tree.forEach((cluster,ci)=>{
+    const y=padding+ci*clusterGap;
+    svg+=`<text x="8" y="${y+4}" font-size="8" fill="rgba(180,60,40,0.35)" font-family="monospace" text-anchor="start" font-weight="500">${cluster.cluster.toUpperCase()}</text>`;
+    svg+=`<line x1="0" y1="${y-30}" x2="${svgW}" y2="${y-30}" stroke="rgba(180,60,40,0.08)" stroke-width="1"/>`;
+  });
+
+  // Edges
+  allEdges.forEach(e=>{
+    const color=e.active?'rgba(212,168,75,0.35)':e.inter?'rgba(180,60,40,0.12)':'rgba(180,60,40,0.18)';
+    svg+=`<line x1="${e.x1}" y1="${e.y1}" x2="${e.x2}" y2="${e.y2}" stroke="${color}" stroke-width="${e.inter?1:1.5}" stroke-dasharray="${e.inter?'4,4':'none'}"/>`;
+  });
+
+  // Nodes
+  allNodes.forEach(n=>{
     const active=n.pts>0;
     const maxed=n.pts>=n.max;
     const isUlt=n.cluster==='Ultimate';
     const isKey=n.cluster==='Key Passives';
-    const fill=maxed?'rgba(212,168,75,0.22)':active?'rgba(212,168,75,0.12)':'rgba(180,60,40,0.06)';
-    const stroke=maxed?'rgba(212,168,75,0.6)':active?'rgba(212,168,75,0.35)':'rgba(180,60,40,0.2)';
-    const textColor=maxed?'rgba(212,168,75,0.95)':active?'rgba(212,168,75,0.7)':'rgba(180,120,80,0.4)';
-    const r=isUlt||isKey?nodeR+4:nodeR;
-    if(isUlt) {
-      svgHTML+=`<polygon points="${n.x},${n.y-r} ${n.x+r},${n.y} ${n.x},${n.y+r} ${n.x-r},${n.y}" fill="${fill}" stroke="${stroke}" stroke-width="1.5" style="cursor:pointer" onclick="cycleSkillPts('${n.id}',${n.max})"/>`;
+    const fill=maxed?'rgba(212,168,75,0.25)':active?'rgba(212,168,75,0.1)':'rgba(20,8,14,0.8)';
+    const stroke=maxed?'rgba(212,168,75,0.7)':active?'rgba(212,168,75,0.4)':'rgba(180,60,40,0.25)';
+    const strokeW=maxed?2:active?1.5:1;
+    const txtColor=maxed?'#d4a84b':active?'rgba(212,168,75,0.8)':'rgba(180,120,80,0.45)';
+    const r=nodeR+(isUlt||isKey?4:0);
+
+    // Click/hover wrapper
+    svg+=`<g style="cursor:pointer" onclick="cycleSkillPts('${n.id}',${n.max})">`;
+    if(isUlt||isKey) {
+      svg+=`<polygon points="${n.x},${n.y-r} ${n.x+r},${n.y} ${n.x},${n.y+r} ${n.x-r},${n.y}" fill="${fill}" stroke="${stroke}" stroke-width="${strokeW}"/>`;
     } else {
-      svgHTML+=`<circle cx="${n.x}" cy="${n.y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="1.5" style="cursor:pointer" onclick="cycleSkillPts('${n.id}',${n.max})"/>`;
+      svg+=`<circle cx="${n.x}" cy="${n.y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${strokeW}"/>`;
     }
-    const shortName=n.name.split(' ').slice(0,2).join(' ');
-    svgHTML+=`<text x="${n.x}" y="${n.y-4}" text-anchor="middle" font-size="7" fill="${textColor}" font-family="monospace" style="pointer-events:none">${shortName.substring(0,10)}</text>`;
-    svgHTML+=`<text x="${n.x}" y="${n.y+7}" text-anchor="middle" font-size="8" fill="${textColor}" font-family="monospace" font-weight="500" style="pointer-events:none">${n.pts}/${n.max}</text>`;
+    // Node name (2 lines max)
+    const words=n.name.split(' ');
+    const line1=words.slice(0,2).join(' ');
+    const line2=words.slice(2).join(' ');
+    svg+=`<text x="${n.x}" y="${n.y-6}" text-anchor="middle" font-size="7.5" fill="${txtColor}" font-family="monospace" style="pointer-events:none">${line1}</text>`;
+    if(line2) svg+=`<text x="${n.x}" y="${n.y+2}" text-anchor="middle" font-size="7.5" fill="${txtColor}" font-family="monospace" style="pointer-events:none">${line2}</text>`;
+    // Points badge
+    svg+=`<text x="${n.x}" y="${n.y+14}" text-anchor="middle" font-size="9" fill="${txtColor}" font-family="monospace" font-weight="600" style="pointer-events:none">${n.pts}/${n.max}</text>`;
+    svg+=`</g>`;
   });
-  svgHTML+=`</svg>`;
-  document.getElementById('tree-svg-container').innerHTML=svgHTML;
+
+  svg+=`</svg>`;
+  document.getElementById('tree-svg-container').innerHTML=svg;
 }
 
 // ── Paragon ──────────────────────────────────────────────
