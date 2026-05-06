@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>D4 Builds</title>
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#c62828"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="D4 Builds"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Source+Code+Pro:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:    #09060a;
+  --bg2:   #110910;
+  --bg3:   #1a0e18;
+  --bg4:   #220f1e;
+  --red:   #c62828;
+  --red2:  rgba(198,40,40,0.15);
+  --red3:  rgba(198,40,40,0.07);
+  --gold:  #d4a84b;
+  --gold2: rgba(212,168,75,0.55);
+  --gold3: rgba(212,168,75,0.1);
+  --text:  rgba(240,220,200,0.92);
+  --text2: rgba(200,170,130,0.55);
+  --text3: rgba(180,120,80,0.35);
+  --border:  rgba(180,60,40,0.22);
+  --border2: rgba(180,60,40,0.11);
+  --magic: rgba(100,100,220,0.6);
+  --rare:  rgba(200,200,0,0.6);
+  --font-d: 'Cinzel', serif;
+  --font-b: 'Crimson Pro', serif;
+  --font-m: 'Source Code Pro', monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--font-b);font-size:14px;}
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");opacity:0.45;}
+
+/* ── Layout ── */
+#app{height:100vh;display:flex;flex-direction:column;position:relative;z-index:1;}
+
+.topbar{height:48px;flex-shrink:0;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:24px;}
+.topbar-logo{font-family:var(--font-d);font-size:15px;letter-spacing:3px;color:var(--red);flex-shrink:0;}
+.topbar-nav{display:flex;height:100%;}
+.topbar-tab{padding:0 14px;font-family:var(--font-m);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);display:flex;align-items:center;border-bottom:2px solid transparent;cursor:pointer;transition:color .15s;white-space:nowrap;}
+.topbar-tab:hover{color:var(--text2);}
+.topbar-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:12px;}
+.topbar-build-name{font-family:var(--font-m);font-size:11px;color:var(--gold2);}
+
+.statusbar{height:28px;flex-shrink:0;background:rgba(198,40,40,0.05);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:8px;}
+.status-dot{width:5px;height:5px;border-radius:50%;background:var(--red);flex-shrink:0;}
+.status-text{font-family:var(--font-m);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);}
+
+.view{flex:1;overflow:hidden;display:none;}
+.view.active{display:flex;flex-direction:column;}
+
+/* ── Shared ── */
+.eyebrow{font-family:var(--font-m);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin-bottom:10px;}
+.section-title{font-family:var(--font-m);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text3);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border2);}
+.btn-primary{padding:7px 16px;background:var(--red2);border:1px solid rgba(198,40,40,0.3);font-family:var(--font-m);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);cursor:pointer;transition:all .15s;}
+.btn-primary:hover{background:rgba(198,40,40,0.22);}
+.btn-ghost{padding:7px 16px;background:transparent;border:1px solid var(--border);font-family:var(--font-m);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);cursor:pointer;}
+.btn-ghost:hover{border-color:var(--border);color:var(--text2);}
+.btn-gold{padding:7px 16px;background:var(--gold3);border:1px solid rgba(212,168,75,0.3);font-family:var(--font-m);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);cursor:pointer;}
+.input-field{width:100%;background:var(--bg3);border:1px solid var(--border2);padding:9px 12px;font-family:var(--font-b);font-size:14px;color:var(--text);outline:none;transition:border-color .15s;}
+.input-field:focus{border-color:var(--gold);}
+.input-field::placeholder{color:var(--text3);}
+.select-field{width:100%;background:var(--bg3);border:1px solid var(--border2);padding:9px 12px;font-family:var(--font-m);font-size:11px;color:var(--text);outline:none;cursor:pointer;}
+.select-field option{background:var(--bg2);}
+
+/* ════════════════════════════
+   HOME VIEW
+════════════════════════════ */
+.home-body{flex:1;overflow-y:auto;padding:24px;}
+.home-body::-webkit-scrollbar{width:4px;}
+.home-body::-webkit-scrollbar-thumb{background:rgba(180,80,10,0.25);}
+.class-filter{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.class-btn{display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--bg3);border:1px solid var(--border2);cursor:pointer;transition:all .15s;}
+.class-btn:hover{border-color:var(--border);}
+.class-btn.active{border-color:rgba(212,168,75,0.4);background:var(--gold3);}
+.class-btn-icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.class-btn-name{font-family:var(--font-m);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text2);}
+.class-btn.active .class-btn-name{color:var(--gold);}
+
+.builds-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.builds-title{font-family:var(--font-m);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text2);}
+.builds-grid{display:flex;flex-direction:column;gap:8px;}
+.build-card{display:flex;align-items:center;gap:14px;background:var(--bg3);border:1px solid var(--border2);padding:14px 16px;cursor:pointer;transition:all .15s;}
+.build-card:hover{border-color:var(--border);background:var(--bg4);}
+.build-card-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.build-card-info{flex:1;min-width:0;}
+.build-card-name{font-size:16px;color:var(--text);margin-bottom:3px;}
+.build-card-meta{font-family:var(--font-m);font-size:10px;color:var(--text3);}
+.build-card-season{font-family:var(--font-m);font-size:9px;padding:2px 8px;background:var(--red2);color:var(--red);border:1px solid rgba(198,40,40,0.2);}
+.build-card-actions{display:flex;gap:6px;opacity:0;transition:opacity .15s;}
+.build-card:hover .build-card-actions{opacity:1;}
+.icon-btn{width:28px;height:28px;background:var(--bg2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;color:var(--text3);}
+.icon-btn:hover{border-color:var(--border);color:var(--text2);}
+.icon-btn.danger:hover{border-color:rgba(198,40,40,0.3);color:var(--red);}
+.empty-state{text-align:center;padding:60px 20px;color:var(--text3);}
+.empty-state-title{font-family:var(--font-d);font-size:18px;color:var(--text2);margin-bottom:8px;letter-spacing:1px;}
+.empty-state-sub{font-size:13px;font-style:italic;}
+
+/* ════════════════════════════
+   GEAR & SKILLS VIEW
+════════════════════════════ */
+.gear-layout{flex:1;display:grid;grid-template-columns:210px 1fr 210px;overflow:hidden;}
+.gear-col{padding:14px 12px;border-right:1px solid var(--border2);overflow-y:auto;}
+.gear-col::-webkit-scrollbar{width:3px;}
+.gear-col::-webkit-scrollbar-thumb{background:rgba(180,80,10,0.2);}
+.gear-col:last-child{border-right:none;}
+
+.gear-slot{display:flex;align-items:center;gap:9px;background:var(--bg3);border:1px solid var(--border2);padding:8px 10px;margin-bottom:5px;cursor:pointer;transition:all .15s;}
+.gear-slot:hover{border-color:var(--border);}
+.gear-slot.filled{border-color:rgba(212,168,75,0.2);}
+.gear-slot.selected{border-color:rgba(212,168,75,0.5);background:var(--gold3);}
+.gear-slot-icon{width:30px;height:30px;background:rgba(198,40,40,0.1);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.gear-slot-label{font-family:var(--font-m);font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--text3);}
+.gear-slot-name{font-size:12px;color:var(--gold2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.gear-slot-name.empty{color:var(--text3);font-style:italic;}
+
+.gear-center{padding:14px 16px;overflow-y:auto;display:flex;flex-direction:column;gap:16px;}
+.gear-center::-webkit-scrollbar{width:3px;}
+.gear-center::-webkit-scrollbar-thumb{background:rgba(180,80,10,0.2);}
+
+.skills-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;}
+.skill-slot{background:var(--bg3);border:1px solid var(--border2);padding:10px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:all .15s;}
+.skill-slot:hover{border-color:var(--border);}
+.skill-slot.filled{border-color:rgba(212,168,75,0.3);}
+.skill-slot-icon{width:38px;height:38px;border-radius:50%;background:rgba(198,40,40,0.12);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:20px;}
+.skill-slot-name{font-family:var(--font-m);font-size:8px;letter-spacing:0.5px;text-transform:uppercase;color:var(--text3);text-align:center;line-height:1.3;}
+.skill-slot.filled .skill-slot-name{color:var(--text2);}
+
+.item-detail-panel{background:var(--bg3);border:1px solid var(--border2);padding:14px;}
+.item-detail-name{font-family:var(--font-d);font-size:15px;color:var(--gold);margin-bottom:2px;letter-spacing:0.5px;}
+.item-detail-type{font-family:var(--font-m);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:10px;}
+.item-detail-implicit{font-size:12px;color:var(--text2);font-style:italic;padding:8px 10px;background:rgba(180,60,40,0.06);border-left:2px solid var(--red);margin-bottom:10px;}
+.affix-row{display:flex;align-items:flex-start;gap:6px;padding:5px 0;border-bottom:1px solid rgba(180,60,40,0.07);}
+.affix-row:last-child{border-bottom:none;}
+.affix-star{color:var(--gold);font-size:10px;flex-shrink:0;margin-top:2px;}
+.affix-text{font-size:13px;color:var(--text);}
+.affix-text.empty{color:var(--text3);font-style:italic;}
+.affix-edit{background:transparent;border:none;outline:none;font-family:var(--font-b);font-size:13px;color:var(--text);width:100%;resize:none;line-height:1.4;}
+.affix-edit::placeholder{color:var(--text3);}
+.affix-edit:focus{background:rgba(212,168,75,0.04);}
+.tempering-badge{font-family:var(--font-m);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(212,168,75,0.5);padding:3px 8px;border:1px solid rgba(212,168,75,0.15);display:inline-block;margin-bottom:8px;}
+
+/* ════════════════════════════
+   SKILL TREE VIEW
+════════════════════════════ */
+.tree-layout{flex:1;display:flex;overflow:hidden;}
+.tree-sidebar{width:200px;flex-shrink:0;border-right:1px solid var(--border2);padding:14px 12px;overflow-y:auto;display:flex;flex-direction:column;gap:0;}
+.tree-sidebar::-webkit-scrollbar{width:3px;}
+.tree-sidebar::-webkit-scrollbar-thumb{background:rgba(180,80,10,0.2);}
+.tree-cluster-label{font-family:var(--font-m);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text3);margin:12px 0 6px;}
+.tree-cluster-label:first-child{margin-top:0;}
+.tree-node-pill{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;background:var(--bg3);border:1px solid var(--border2);margin-bottom:3px;cursor:pointer;transition:all .15s;}
+.tree-node-pill:hover{border-color:var(--border);}
+.tree-node-pill.active{border-color:rgba(212,168,75,0.35);background:var(--gold3);}
+.tree-node-pill.maxed{border-color:rgba(212,168,75,0.5);background:rgba(212,168,75,0.12);}
+.tree-node-name{font-size:12px;color:var(--text2);}
+.tree-node-pill.active .tree-node-name,.tree-node-pill.maxed .tree-node-name{color:var(--text);}
+.tree-pts-badge{font-family:var(--font-m);font-size:9px;color:var(--text3);}
+.tree-node-pill.active .tree-pts-badge,.tree-node-pill.maxed .tree-pts-badge{color:var(--gold);}
+.tree-pts-total{font-family:var(--font-m);font-size:10px;color:var(--text2);padding:8px;border-top:1px solid var(--border2);margin-top:auto;text-align:center;}
+
+.tree-canvas-wrap{flex:1;overflow:auto;position:relative;}
+.tree-canvas-wrap::-webkit-scrollbar{width:6px;height:6px;}
+.tree-canvas-wrap::-webkit-scrollbar-thumb{background:rgba(180,80,10,0.25);}
+.tree-svg-container{min-width:600px;min-height:500px;}
+
+/* ════════════════════════════
+   PARAGON VIEW
+════════════════════════════ */
+.paragon-layout{flex:1;display:flex;overflow:hidden;}
+.paragon-sidebar{width:200px;flex-shrink:0;border-right:1px solid var(--border2);padding:14px 12px;overflow-y:auto;display:flex;flex-direction:column;}
+.paragon-sidebar::-webkit-scrollbar{width:3px;}
+.paragon-sidebar::-webkit-scrollbar-thumb{background:rgba(180,80,10,0.2);}
+.board-card{display:flex;align-items:center;gap:8px;padding:9px 10px;border:1px solid var(--border2);background:var(--bg3);margin-bottom:5px;cursor:pointer;transition:all .15s;}
+.board-card:hover{border-color:var(--border);}
+.board-card.active{border-color:rgba(212,168,75,0.35);background:var(--gold3);}
+.board-num{width:22px;height:22px;border-radius:50%;background:rgba(198,40,40,0.12);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--font-m);font-size:10px;color:var(--red);flex-shrink:0;}
+.board-info{flex:1;min-width:0;}
+.board-name-text{font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.board-glyph-text{font-family:var(--font-m);font-size:9px;color:var(--text3);}
+.board-card.active .board-name-text{color:var(--gold);}
+
+.paragon-main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.paragon-board-header{padding:10px 16px;border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:12px;flex-shrink:0;background:var(--bg2);}
+.paragon-board-title{font-family:var(--font-d);font-size:14px;color:var(--gold);letter-spacing:1px;}
+.paragon-glyph-input{background:var(--bg3);border:1px solid var(--border2);padding:4px 10px;font-family:var(--font-m);font-size:11px;color:var(--text);outline:none;width:160px;}
+.paragon-glyph-input:focus{border-color:var(--gold);}
+.paragon-glyph-input::placeholder{color:var(--text3);}
+.paragon-board-stats{margin-left:auto;font-family:var(--font-m);font-size:10px;color:var(--text3);}
+
+.paragon-grid-wrap{flex:1;overflow:auto;padding:16px;}
+.paragon-grid-wrap::-webkit-scrollbar{width:6px;height:6px;}
+.paragon-grid-wrap::-webkit-scrollbar-thumb{background:rgba(180,80,10,0.25);}
+.paragon-grid{display:inline-grid;gap:2px;}
+.pnode{width:20px;height:20px;border:1px solid rgba(180,60,40,0.14);cursor:pointer;transition:all .1s;display:flex;align-items:center;justify-content:center;font-size:7px;font-family:var(--font-m);}
+.pnode:hover{border-color:rgba(212,168,75,0.4);}
+.pnode.normal{background:rgba(180,60,40,0.05);}
+.pnode.magic{background:rgba(80,80,180,0.1);border-color:rgba(80,80,220,0.2);}
+.pnode.rare{background:rgba(180,180,0,0.08);border-color:rgba(200,200,0,0.18);}
+.pnode.legendary{background:rgba(180,80,20,0.1);border-color:rgba(220,120,40,0.25);}
+.pnode.glyph{border-radius:50%;background:rgba(198,40,40,0.12);border-color:rgba(198,40,40,0.3);color:var(--red);}
+.pnode.start{border-radius:50%;background:rgba(212,168,75,0.15);border-color:rgba(212,168,75,0.4);}
+.pnode.active{background:rgba(212,168,75,0.18);border-color:rgba(212,168,75,0.5);}
+.pnode.active.magic{background:rgba(100,100,220,0.2);border-color:rgba(120,120,255,0.5);}
+.pnode.active.rare{background:rgba(200,200,0,0.15);border-color:rgba(220,220,0,0.45);}
+.pnode.active.glyph{background:rgba(198,40,40,0.25);border-color:rgba(198,40,40,0.6);}
+
+.paragon-legend{padding:8px 16px;border-top:1px solid var(--border2);display:flex;gap:14px;flex-shrink:0;background:var(--bg2);}
+.legend-item{display:flex;align-items:center;gap:5px;font-family:var(--font-m);font-size:9px;color:var(--text3);}
+.legend-swatch{width:12px;height:12px;border:1px solid;}
+
+/* ════════════════════════════
+   MERCENARY VIEW
+════════════════════════════ */
+.merc-layout{flex:1;padding:20px 24px;overflow-y:auto;}
+.merc-layout::-webkit-scrollbar{width:4px;}
+.merc-layout::-webkit-scrollbar-thumb{background:rgba(180,80,10,0.25);}
+.merc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.merc-card{background:var(--bg3);border:1px solid var(--border2);padding:14px;cursor:pointer;transition:all .15s;text-align:center;}
+.merc-card:hover{border-color:var(--border);}
+.merc-card.selected{border-color:rgba(212,168,75,0.4);background:var(--gold3);}
+.merc-card-icon{font-size:28px;margin-bottom:8px;}
+.merc-card-name{font-family:var(--font-d);font-size:12px;color:var(--text2);letter-spacing:1px;}
+.merc-card.selected .merc-card-name{color:var(--gold);}
+.merc-card-role{font-family:var(--font-m);font-size:9px;color:var(--text3);margin-top:3px;}
+.merc-skills-section{margin-top:16px;}
+.merc-skill-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border2);}
+.merc-skill-icon{width:32px;height:32px;border-radius:50%;background:rgba(198,40,40,0.1);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.merc-skill-info{flex:1;}
+.merc-skill-name{font-size:14px;color:var(--text);}
+.merc-skill-desc{font-size:12px;color:var(--text3);font-style:italic;}
+.merc-toggle{width:34px;height:17px;background:rgba(180,80,10,0.12);border:1px solid var(--border);border-radius:9px;position:relative;cursor:pointer;transition:all .2s;}
+.merc-toggle.on{background:rgba(198,40,40,0.25);border-color:rgba(198,40,40,0.45);}
+.merc-toggle-thumb{position:absolute;width:11px;height:11px;border-radius:50%;background:rgba(200,100,30,0.4);top:2px;left:2px;transition:all .2s;}
+.merc-toggle.on .merc-toggle-thumb{left:19px;background:var(--red);}
+
+/* ════════════════════════════
+   NOTES VIEW
+════════════════════════════ */
+.notes-layout{flex:1;padding:20px 24px;display:flex;flex-direction:column;gap:14px;overflow:hidden;}
+.notes-textarea{flex:1;background:var(--bg3);border:1px solid var(--border2);padding:14px;font-family:var(--font-b);font-size:14px;color:var(--text);resize:none;outline:none;line-height:1.7;}
+.notes-textarea:focus{border-color:rgba(212,168,75,0.3);}
+.notes-textarea::placeholder{color:var(--text3);}
+
+/* ════════════════════════════
+   MODAL
+════════════════════════════ */
+.modal-overlay{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:var(--bg2);border:1px solid var(--border);padding:28px;min-width:400px;max-width:520px;width:100%;}
+.modal-title{font-family:var(--font-d);font-size:18px;color:var(--gold);letter-spacing:1px;margin-bottom:20px;}
+.modal-field{margin-bottom:14px;}
+.modal-label{font-family:var(--font-m);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);display:block;margin-bottom:7px;}
+.modal-actions{display:flex;gap:10px;margin-top:20px;}
+
+/* ── Toast ── */
+.toast{position:fixed;bottom:36px;left:50%;transform:translateX(-50%);background:var(--bg2);border:1px solid var(--border);color:var(--gold);padding:9px 20px;font-family:var(--font-m);font-size:11px;letter-spacing:0.5px;z-index:200;opacity:0;pointer-events:none;transition:opacity .25s;white-space:nowrap;}
+.toast.show{opacity:1;}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div class="topbar">
+    <div class="topbar-logo">D4 Builds</div>
+    <div class="topbar-nav" id="topbar-nav" style="display:none">
+      <div class="topbar-tab active" id="tab-gear" onclick="showTab('gear')">Gear & Skills</div>
+      <div class="topbar-tab" id="tab-tree" onclick="showTab('tree')">Skill Tree</div>
+      <div class="topbar-tab" id="tab-paragon" onclick="showTab('paragon')">Paragon</div>
+      <div class="topbar-tab" id="tab-merc" onclick="showTab('merc')">Mercenary</div>
+      <div class="topbar-tab" id="tab-notes" onclick="showTab('notes')">Notes</div>
+    </div>
+    <div class="topbar-right">
+      <div class="topbar-build-name" id="topbar-build-name"></div>
+      <button class="btn-ghost" id="btn-back" style="display:none" onclick="goHome()">← Builds</button>
+      <button class="btn-primary" id="btn-new-build" onclick="openNewBuildModal()">+ New Build</button>
+    </div>
+  </div>
+
+  <!-- ══ HOME ══ -->
+  <div class="view active" id="view-home">
+    <div class="home-body">
+      <div class="eyebrow">Filter by Class</div>
+      <div class="class-filter" id="class-filter">
+        <div class="class-btn active" data-class="all" onclick="setClassFilter('all')">
+          <div class="class-btn-name">All</div>
+        </div>
+        <div class="class-btn" data-class="Barbarian" onclick="setClassFilter('Barbarian')">
+          <div class="class-btn-icon" style="background:rgba(198,40,40,0.15)">⚔</div>
+          <div class="class-btn-name">Barbarian</div>
+        </div>
+        <div class="class-btn" data-class="Sorcerer" onclick="setClassFilter('Sorcerer')">
+          <div class="class-btn-icon" style="background:rgba(212,168,75,0.15)">🔮</div>
+          <div class="class-btn-name">Sorcerer</div>
+        </div>
+        <div class="class-btn" data-class="Druid" onclick="setClassFilter('Druid')">
+          <div class="class-btn-icon" style="background:rgba(80,180,80,0.12)">🌿</div>
+          <div class="class-btn-name">Druid</div>
+        </div>
+        <div class="class-btn" data-class="Necromancer" onclick="setClassFilter('Necromancer')">
+          <div class="class-btn-icon" style="background:rgba(140,80,200,0.12)">💀</div>
+          <div class="class-btn-name">Necromancer</div>
+        </div>
+        <div class="class-btn" data-class="Rogue" onclick="setClassFilter('Rogue')">
+          <div class="class-btn-icon" style="background:rgba(80,200,180,0.1)">🗡</div>
+          <div class="class-btn-name">Rogue</div>
+        </div>
+        <div class="class-btn" data-class="Spiritborn" onclick="setClassFilter('Spiritborn')">
+          <div class="class-btn-icon" style="background:rgba(200,140,40,0.12)">🦅</div>
+          <div class="class-btn-name">Spiritborn</div>
+        </div>
+        <div class="class-btn" data-class="Warlock" onclick="setClassFilter('Warlock')">
+          <div class="class-btn-icon" style="background:rgba(180,40,180,0.1)">🔥</div>
+          <div class="class-btn-name">Warlock</div>
+        </div>
+      </div>
+      <div class="builds-header">
+        <div class="builds-title" id="builds-title">All Builds</div>
+      </div>
+      <div class="builds-grid" id="builds-grid"></div>
+    </div>
+  </div>
+
+  <!-- ══ GEAR & SKILLS ══ -->
+  <div class="view" id="view-gear">
+    <div class="gear-layout">
+      <div class="gear-col">
+        <div class="eyebrow">Armor</div>
+        <div class="gear-slot" id="slot-helm" onclick="selectSlot('helm')">
+          <div class="gear-slot-icon">🪖</div>
+          <div style="flex:1;min-width:0"><div class="gear-slot-label">Helm</div><div class="gear-slot-name empty" id="slot-helm-name">Empty</div></div>
+        </div>
+        <div class="gear-slot" id="slot-chest" onclick="selectSlot('chest')">
+          <div class="gear-slot-icon">🛡</div>
+          <div style="flex:1;min-width:0"><div class="gear-slot-label">Chest</div><div class="gear-slot-name empty" id="slot-chest-name">Empty</div></div>
+        </div>
+        <div class="gear-slot" id="slot-gloves" onclick="selectSlot('gloves')">
+          <div class="gear-slot-icon">🧤</div>
+          <div style="flex:1;min-width:0"><div class="gear-slot-label">Gloves</div><div class="gear-slot-name empty" id="slot-gloves-name">Empty</div></div>
+        </div>
+        <div class="gear-slot" id="slot-pants" onclick="selectSlot('pants')">
+          <div class="gear-slot-icon">👖</div>
+          <div style="flex:1;min-width:0"><div class="gear-slot-label">Pants</div><div class="gear-slot-name empty" id="slot-pants-name">Empty</div></div>
+        </div>
+        <div class="gear-slot" id="slot-boots" onclick="selectSlot('boots')">
+          <div class="gear-slot-icon">👢</div>
+          <div style="flex:1;min-width:0"><div class="gear-slot-label">Boots</div><div class="gear-slot-name empty" id="slot-boots-name">Empty</div></div>
+        </div>
+        <div class="eyebrow" style="margin-top:10px">Weapons</div>
+        <div class="gear-slot" id="slot-weapon" onclick="selectSlot('weapon')">
+          <div class="gear-slot-icon">⚔</div>
+          <div style="flex:1;min-width:0"><div class="gear-slot-label">Weapon</div><div class="gear-slot-name empty" id="slot-weapon-name">Empty</div></div>
+        </div>
+        <div class="gear-slot" id="slot-offhand" onclick="selectSlot('offhand')">
+          <div class="gear-slot-icon">🔮</div>
+          <div style="flex:1;min-width:0"><div class="gear-slot-label">Offhand</div><div class="gear-slot-name empty" id="slot-offhand-name">Empty</div></div>
+        </div>
+      </div>
+
+      <div class="gear-center">
+        <div>
+          <div class="section-title">Skills</div>
+          <div class="skills-grid" id="skills-grid"></div>
+        </div>
+        <div id="gear-detail-panel">
+          <div class="section-title">Select a gear slot or skill to edit</div>
+          <div style="font-size:13px;color:var(--text3);font-style:italic">Click any slot on the left or right to configure it</div>
+        </div>
+      </div>
+
+      <div class="gear-col">
+        <div class="eyebrow">Jewelry</div>
+        <div class="gear-slot" id="slot-amulet" onclick="selectSlot('amulet')">
+          <div class="gear-slot-icon">📿</div>
+          <div style="flex:1;min-width:0"><div class="gear-slot-label">Amulet</div><div class="gear-slot-name empty" id="slot-amulet-name">Empty</div></div>
+        </div>
+        <div class="gear-slot" id="slot-ring1" onclick="selectSlot('ring1')">
+          <div class="gear-slot-icon">💍</div>
+          <div style="flex:1;min-width:0"><div class="gear-slot-label">Ring 1</div><div class="gear-slot-name empty" id="slot-ring1-name">Empty</div></div>
+        </div>
+        <div class="gear-slot" id="slot-ring2" onclick="selectSlot('ring2')">
+          <div class="gear-slot-icon">💍</div>
+          <div style="flex:1;min-width:0"><div class="gear-slot-label">Ring 2</div><div class="gear-slot-name empty" id="slot-ring2-name">Empty</div></div>
+        </div>
+        <div class="eyebrow" style="margin-top:10px">Seal &amp; Runes</div>
+        <div class="gear-slot" id="slot-seal" onclick="selectSlot('seal')">
+          <div class="gear-slot-icon">🔷</div>
+          <div style="flex:1;min-width:0"><div class="gear-slot-label">Seal</div><div class="gear-slot-name empty" id="slot-seal-name">Empty</div></div>
+        </div>
+        <div class="gear-slot" id="slot-rune1" onclick="selectSlot('rune1')">
+          <div class="gear-slot-icon">⬟</div>
+          <div style="flex:1;min-width:0"><div class="gear-slot-label">Rune 1</div><div class="gear-slot-name empty" id="slot-rune1-name">Empty</div></div>
+        </div>
+        <div class="gear-slot" id="slot-rune2" onclick="selectSlot('rune2')">
+          <div class="gear-slot-icon">⬟</div>
+          <div style="flex:1;min-width:0"><div class="gear-slot-label">Rune 2</div><div class="gear-slot-name empty" id="slot-rune2-name">Empty</div></div>
+        </div>
+        <div class="eyebrow" style="margin-top:10px">Soul Shards</div>
+        <div class="gear-slot" id="slot-shard1" onclick="selectSlot('shard1')">
+          <div class="gear-slot-icon">💎</div>
+          <div style="flex:1;min-width:0"><div class="gear-slot-label">Shard 1</div><div class="gear-slot-name empty" id="slot-shard1-name">Empty</div></div>
+        </div>
+        <div class="gear-slot" id="slot-shard2" onclick="selectSlot('shard2')">
+          <div class="gear-slot-icon">💎</div>
+          <div style="flex:1;min-width:0"><div class="gear-slot-label">Shard 2</div><div class="gear-slot-name empty" id="slot-shard2-name">Empty</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SKILL TREE ══ -->
+  <div class="view" id="view-tree">
+    <div class="tree-layout">
+      <div class="tree-sidebar" id="tree-sidebar"></div>
+      <div class="tree-canvas-wrap">
+        <div class="tree-svg-container" id="tree-svg-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PARAGON ══ -->
+  <div class="view" id="view-paragon">
+    <div class="paragon-layout">
+      <div class="paragon-sidebar">
+        <div class="eyebrow">Boards</div>
+        <div id="board-list"></div>
+        <button class="btn-primary" style="margin-top:8px;width:100%" onclick="addBoard()">+ Add Board</button>
+      </div>
+      <div class="paragon-main">
+        <div class="paragon-board-header">
+          <div class="paragon-board-title" id="paragon-board-title">Select a board</div>
+          <input class="paragon-glyph-input" id="paragon-glyph-input" type="text" placeholder="Glyph name..." oninput="saveGlyph()"/>
+          <div class="paragon-board-stats" id="paragon-board-stats"></div>
+          <button class="btn-ghost" style="font-size:9px;padding:4px 10px" onclick="deleteBoard()">Remove</button>
+        </div>
+        <div class="paragon-grid-wrap">
+          <div class="paragon-grid" id="paragon-grid"></div>
+        </div>
+        <div class="paragon-legend">
+          <div class="legend-item"><div class="legend-swatch" style="background:rgba(180,60,40,0.05);border-color:rgba(180,60,40,0.14)"></div>Normal</div>
+          <div class="legend-item"><div class="legend-swatch" style="background:rgba(80,80,180,0.1);border-color:rgba(80,80,220,0.2)"></div>Magic</div>
+          <div class="legend-item"><div class="legend-swatch" style="background:rgba(180,180,0,0.08);border-color:rgba(200,200,0,0.18)"></div>Rare</div>
+          <div class="legend-item"><div class="legend-swatch" style="background:rgba(180,80,20,0.1);border-color:rgba(220,120,40,0.25)"></div>Legendary</div>
+          <div class="legend-item"><div class="legend-swatch" style="background:rgba(198,40,40,0.12);border-color:rgba(198,40,40,0.3);border-radius:50%"></div>Glyph</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MERCENARY ══ -->
+  <div class="view" id="view-merc">
+    <div class="merc-layout">
+      <div class="eyebrow">Choose Mercenary</div>
+      <div class="merc-grid" id="merc-grid"></div>
+      <div id="merc-skills-section"></div>
+    </div>
+  </div>
+
+  <!-- ══ NOTES ══ -->
+  <div class="view" id="view-notes">
+    <div class="notes-layout">
+      <div class="section-title">Build Notes</div>
+      <textarea class="notes-textarea" id="notes-textarea" placeholder="Add notes about your build — playstyle tips, BiS alternatives, leveling path, season mechanics..." oninput="saveNotes()"></textarea>
+    </div>
+  </div>
+
+  <div class="statusbar">
+    <div class="status-dot"></div>
+    <div class="status-text" id="status-text">D4 Build Manager · Season 7</div>
+  </div>
+</div>
+
+<!-- ══ NEW BUILD MODAL ══ -->
+<div class="modal-overlay" id="modal-overlay" onclick="handleModalClick(event)">
+  <div class="modal">
+    <div class="modal-title">New Build</div>
+    <div class="modal-field">
+      <label class="modal-label">Build Name</label>
+      <input class="input-field" id="modal-build-name" type="text" placeholder="e.g. Ball Lightning Sorc"/>
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Class</label>
+      <select class="select-field" id="modal-class">
+        <option value="Barbarian">Barbarian</option>
+        <option value="Sorcerer">Sorcerer</option>
+        <option value="Druid">Druid</option>
+        <option value="Necromancer">Necromancer</option>
+        <option value="Rogue">Rogue</option>
+        <option value="Spiritborn">Spiritborn</option>
+        <option value="Warlock">Warlock</option>
+      </select>
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Season</label>
+      <select class="select-field" id="modal-season">
+        <option value="S7">Season 7</option>
+        <option value="S8">Season 8</option>
+        <option value="Eternal">Eternal</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn-gold" onclick="createBuild()">Create Build</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const WORKER = 'winter-thunder-2fec.kay-williamluke.workers.dev'; // Replace with your D4 Builds Worker URL
+const BUILDS_KEY = 'd4builds';
+
+// ── Class data ────────────────────────────────────────
+const CLASS_ICONS = {
+  Barbarian:'⚔',Sorcerer:'🔮',Druid:'🌿',Necromancer:'💀',
+  Rogue:'🗡',Spiritborn:'🦅',Warlock:'🔥'
+};
+const CLASS_COLORS = {
+  Barbarian:'rgba(198,40,40,0.15)',Sorcerer:'rgba(212,168,75,0.15)',
+  Druid:'rgba(80,180,80,0.12)',Necromancer:'rgba(140,80,200,0.12)',
+  Rogue:'rgba(80,200,180,0.1)',Spiritborn:'rgba(200,140,40,0.12)',
+  Warlock:'rgba(180,40,180,0.1)'
+};
+
+// ── Skill trees ────────────────────────────────────────
+const SKILL_TREES = {
+  Sorcerer: [
+    { cluster:'Basic', nodes:[
+      {id:'spark',name:'Spark',max:5},{id:'frost_bolt',name:'Frost Bolt',max:5},
+      {id:'fire_bolt',name:'Fire Bolt',max:5},{id:'arc_lash',name:'Arc Lash',max:5}
+    ]},
+    { cluster:'Core', nodes:[
+      {id:'ball_lightning',name:'Ball Lightning',max:5},{id:'chain_lightning',name:'Chain Lightning',max:5},
+      {id:'frozen_orb',name:'Frozen Orb',max:5},{id:'incinerate',name:'Incinerate',max:5},
+      {id:'charged_bolts',name:'Charged Bolts',max:5},{id:'ice_shards',name:'Ice Shards',max:5},
+      {id:'fireball',name:'Fireball',max:5}
+    ]},
+    { cluster:'Defensive', nodes:[
+      {id:'flame_shield',name:'Flame Shield',max:5},{id:'ice_armor',name:'Ice Armor',max:5},
+      {id:'frost_nova',name:'Frost Nova',max:5},{id:'teleport',name:'Teleport',max:5}
+    ]},
+    { cluster:'Conjuration', nodes:[
+      {id:'hydra',name:'Hydra',max:5},{id:'ice_blades',name:'Ice Blades',max:5},
+      {id:'lightning_spear',name:'Lightning Spear',max:5}
+    ]},
+    { cluster:'Mastery', nodes:[
+      {id:'blizzard',name:'Blizzard',max:5},{id:'meteor',name:'Meteor',max:5},
+      {id:'firewall',name:'Firewall',max:5},{id:'charged_bolt_mastery',name:'Charged Bolt Mastery',max:3},
+      {id:'static_discharge',name:'Static Discharge',max:3}
+    ]},
+    { cluster:'Ultimate', nodes:[
+      {id:'deep_freeze',name:'Deep Freeze',max:1},{id:'inferno',name:'Inferno',max:1},
+      {id:'unstable_currents',name:'Unstable Currents',max:1}
+    ]},
+    { cluster:'Key Passives', nodes:[
+      {id:'avalanche',name:'Avalanche',max:1},{id:'vyr_mastery',name:"Vyr's Mastery",max:1},
+      {id:'combustion',name:'Combustion',max:1},{id:'lightning_rod',name:'Lightning Rod',max:1},
+      {id:'overflowing_energy',name:'Overflowing Energy',max:1}
+    ]}
+  ],
+  Barbarian: [
+    { cluster:'Basic', nodes:[
+      {id:'bash',name:'Bash',max:5},{id:'flay',name:'Flay',max:5},
+      {id:'frenzy',name:'Frenzy',max:5},{id:'lunging_strike',name:'Lunging Strike',max:5}
+    ]},
+    { cluster:'Core', nodes:[
+      {id:'double_swing',name:'Double Swing',max:5},{id:'hammer_of_ancients',name:'Hammer of Ancients',max:5},
+      {id:'rend',name:'Rend',max:5},{id:'upheaval',name:'Upheaval',max:5},
+      {id:'whirlwind',name:'Whirlwind',max:5}
+    ]},
+    { cluster:'Defensive', nodes:[
+      {id:'challenging_shout',name:'Challenging Shout',max:5},{id:'ground_stomp',name:'Ground Stomp',max:5},
+      {id:'iron_skin',name:'Iron Skin',max:5},{id:'rallying_cry',name:'Rallying Cry',max:5}
+    ]},
+    { cluster:'Brawling', nodes:[
+      {id:'charge',name:'Charge',max:5},{id:'kick',name:'Kick',max:5},
+      {id:'leap',name:'Leap',max:5},{id:'war_cry',name:'War Cry',max:5}
+    ]},
+    { cluster:'Weapon Mastery', nodes:[
+      {id:'death_blow',name:'Death Blow',max:5},{id:'rupture',name:'Rupture',max:5},
+      {id:'steel_grasp',name:'Steel Grasp',max:5}
+    ]},
+    { cluster:'Ultimate', nodes:[
+      {id:'call_of_the_ancients',name:'Call of the Ancients',max:1},{id:'iron_maelstrom',name:'Iron Maelstrom',max:1},
+      {id:'wrath_of_the_berserker',name:'Wrath of the Berserker',max:1}
+    ]},
+    { cluster:'Key Passives', nodes:[
+      {id:'unbridled_rage',name:'Unbridled Rage',max:1},{id:'gushing_wounds',name:'Gushing Wounds',max:1},
+      {id:'walking_arsenal',name:'Walking Arsenal',max:1},{id:'unconstrained',name:'Unconstrained',max:1}
+    ]}
+  ],
+  Druid: [
+    { cluster:'Basic', nodes:[
+      {id:'storm_strike',name:'Storm Strike',max:5},{id:'wind_shear',name:'Wind Shear',max:5},
+      {id:'earth_spike',name:'Earth Spike',max:5},{id:'claw',name:'Claw',max:5}
+    ]},
+    { cluster:'Core', nodes:[
+      {id:'pulverize',name:'Pulverize',max:5},{id:'shred',name:'Shred',max:5},
+      {id:'landslide',name:'Landslide',max:5},{id:'tornado',name:'Tornado',max:5},
+      {id:'lightning_storm',name:'Lightning Storm',max:5}
+    ]},
+    { cluster:'Defensive', nodes:[
+      {id:'cyclone_armor',name:'Cyclone Armor',max:5},{id:'blood_howl',name:'Blood Howl',max:5},
+      {id:'earthen_bulwark',name:'Earthen Bulwark',max:5}
+    ]},
+    { cluster:'Companion', nodes:[
+      {id:'wolves',name:'Wolves',max:5},{id:'ravens',name:'Ravens',max:5},
+      {id:'vine_creeper',name:'Vine Creeper',max:5}
+    ]},
+    { cluster:'Wrath', nodes:[
+      {id:'boulder',name:'Boulder',max:5},{id:'trample',name:'Trample',max:5},
+      {id:'hurricane',name:'Hurricane',max:5},{id:'grizzly_rage',name:'Grizzly Rage',max:5}
+    ]},
+    { cluster:'Ultimate', nodes:[
+      {id:'cataclysm',name:'Cataclysm',max:1},{id:'lacerate',name:'Lacerate',max:1},
+      {id:'petrify',name:'Petrify',max:1}
+    ]},
+    { cluster:'Key Passives', nodes:[
+      {id:'lupine_ferocity',name:'Lupine Ferocity',max:1},{id:'bestial_rampage',name:'Bestial Rampage',max:1},
+      {id:'perfect_storm',name:'Perfect Storm',max:1},{id:'ursine_strength',name:'Ursine Strength',max:1}
+    ]}
+  ],
+  Necromancer: [
+    { cluster:'Basic', nodes:[
+      {id:'bone_splinters',name:'Bone Splinters',max:5},{id:'decompose',name:'Decompose',max:5},
+      {id:'reap',name:'Reap',max:5},{id:'hemorrhage',name:'Hemorrhage',max:5}
+    ]},
+    { cluster:'Core', nodes:[
+      {id:'bone_spear',name:'Bone Spear',max:5},{id:'sever',name:'Sever',max:5},
+      {id:'blight',name:'Blight',max:5},{id:'blood_surge',name:'Blood Surge',max:5},
+      {id:'bone_spirit',name:'Bone Spirit',max:5}
+    ]},
+    { cluster:'Macabre', nodes:[
+      {id:'bone_prison',name:'Bone Prison',max:5},{id:'corpse_explosion',name:'Corpse Explosion',max:5},
+      {id:'corpse_tendrils',name:'Corpse Tendrils',max:5},{id:'grim_harvest',name:'Grim Harvest',max:3}
+    ]},
+    { cluster:'Curse', nodes:[
+      {id:'decrepify',name:'Decrepify',max:5},{id:'iron_maiden',name:'Iron Maiden',max:5}
+    ]},
+    { cluster:'Summoning', nodes:[
+      {id:'raise_skeleton',name:'Raise Skeleton',max:5},{id:'golem',name:'Golem',max:1},
+      {id:'revive',name:'Revive',max:5}
+    ]},
+    { cluster:'Ultimate', nodes:[
+      {id:'army_of_the_dead',name:'Army of the Dead',max:1},{id:'blood_wave',name:'Blood Wave',max:1},
+      {id:'bone_storm',name:'Bone Storm',max:1}
+    ]},
+    { cluster:'Key Passives', nodes:[
+      {id:'ossified_essence',name:'Ossified Essence',max:1},{id:'rathmas_vigor',name:"Rathma's Vigor",max:1},
+      {id:'shadowblight',name:'Shadowblight',max:1},{id:'kalan_edict',name:"Kalan's Edict",max:1}
+    ]}
+  ],
+  Rogue: [
+    { cluster:'Basic', nodes:[
+      {id:'puncture',name:'Puncture',max:5},{id:'blade_shift',name:'Blade Shift',max:5},
+      {id:'forceful_arrow',name:'Forceful Arrow',max:5},{id:'invigorating_strike',name:'Invigorating Strike',max:5}
+    ]},
+    { cluster:'Core', nodes:[
+      {id:'twisting_blades',name:'Twisting Blades',max:5},{id:'flurry',name:'Flurry',max:5},
+      {id:'penetrating_shot',name:'Penetrating Shot',max:5},{id:'rapid_fire',name:'Rapid Fire',max:5},
+      {id:'barrage',name:'Barrage',max:5}
+    ]},
+    { cluster:'Agility', nodes:[
+      {id:'dash',name:'Dash',max:5},{id:'shadow_step',name:'Shadow Step',max:5},
+      {id:'caltrops',name:'Caltrops',max:5}
+    ]},
+    { cluster:'Subterfuge', nodes:[
+      {id:'concealment',name:'Concealment',max:5},{id:'dark_shroud',name:'Dark Shroud',max:5},
+      {id:'poison_trap',name:'Poison Trap',max:5},{id:'smoke_grenade',name:'Smoke Grenade',max:5}
+    ]},
+    { cluster:'Imbuement', nodes:[
+      {id:'shadow_imbuement',name:'Shadow Imbuement',max:5},{id:'poison_imbuement',name:'Poison Imbuement',max:5},
+      {id:'cold_imbuement',name:'Cold Imbuement',max:5}
+    ]},
+    { cluster:'Ultimate', nodes:[
+      {id:'death_trap',name:'Death Trap',max:1},{id:'rain_of_arrows',name:'Rain of Arrows',max:1},
+      {id:'shadow_clone',name:'Shadow Clone',max:1}
+    ]},
+    { cluster:'Key Passives', nodes:[
+      {id:'adrenaline_rush',name:'Adrenaline Rush',max:1},{id:'close_quarters_combat',name:'Close Quarters Combat',max:1},
+      {id:'victimize',name:'Victimize',max:1},{id:'exposure',name:'Exposure',max:1}
+    ]}
+  ],
+  Spiritborn: [
+    { cluster:'Basic', nodes:[
+      {id:'thunderspike',name:'Thunderspike',max:5},{id:'rake',name:'Rake',max:5},
+      {id:'crush',name:'Crush',max:5},{id:'quill_volley',name:'Quill Volley',max:5}
+    ]},
+    { cluster:'Core', nodes:[
+      {id:'ravager',name:'Ravager',max:5},{id:'stinger',name:'Stinger',max:5},
+      {id:'soar',name:'Soar',max:5},{id:'touch_of_death',name:'Touch of Death',max:5},
+      {id:'rock_splitter',name:'Rock Splitter',max:5}
+    ]},
+    { cluster:'Defensive', nodes:[
+      {id:'counterattack',name:'Counterattack',max:5},{id:'concussive_stomp',name:'Concussive Stomp',max:5},
+      {id:'resilience',name:'Resilience',max:3}
+    ]},
+    { cluster:'Agility', nodes:[
+      {id:'veil_of_steel',name:'Veil of Steel',max:5},{id:'armored_hide',name:'Armored Hide',max:5}
+    ]},
+    { cluster:'Focus', nodes:[
+      {id:'eagle_ken',name:'Eagle Ken',max:5},{id:'gorilla_spirit',name:'Gorilla Spirit',max:5},
+      {id:'centipede_venom',name:'Centipede Venom',max:5},{id:'jaguar_ferocity',name:'Jaguar Ferocity',max:5}
+    ]},
+    { cluster:'Ultimate', nodes:[
+      {id:'scourge',name:'Scourge',max:1},{id:'supreme_instinct',name:'Supreme Instinct',max:1},
+      {id:'spiritborn_ultimate',name:'Spiritborn Ultimate',max:1}
+    ]},
+    { cluster:'Key Passives', nodes:[
+      {id:'territorial',name:'Territorial',max:1},{id:'apex_predator',name:'Apex Predator',max:1},
+      {id:'symbiotic_presence',name:'Symbiotic Presence',max:1}
+    ]}
+  ],
+  Warlock: [
+    { cluster:'Basic', nodes:[
+      {id:'shadow_bolt',name:'Shadow Bolt',max:5},{id:'eldritch_blast',name:'Eldritch Blast',max:5},
+      {id:'dark_touch',name:'Dark Touch',max:5}
+    ]},
+    { cluster:'Core', nodes:[
+      {id:'curse_of_agony',name:'Curse of Agony',max:5},{id:'soul_drain',name:'Soul Drain',max:5},
+      {id:'void_rift',name:'Void Rift',max:5},{id:'hex_bolt',name:'Hex Bolt',max:5},
+      {id:'necrotic_caress',name:'Necrotic Caress',max:5}
+    ]},
+    { cluster:'Defensive', nodes:[
+      {id:'dark_pact',name:'Dark Pact',max:5},{id:'shadow_veil',name:'Shadow Veil',max:5},
+      {id:'soul_barrier',name:'Soul Barrier',max:5}
+    ]},
+    { cluster:'Corruption', nodes:[
+      {id:'wither',name:'Wither',max:5},{id:'entropy',name:'Entropy',max:5},
+      {id:'torment',name:'Torment',max:5},{id:'desecrate',name:'Desecrate',max:5}
+    ]},
+    { cluster:'Ritual', nodes:[
+      {id:'blood_ritual',name:'Blood Ritual',max:5},{id:'demon_pact',name:'Demon Pact',max:5},
+      {id:'infernal_contract',name:'Infernal Contract',max:3}
+    ]},
+    { cluster:'Ultimate', nodes:[
+      {id:'apocalypse',name:'Apocalypse',max:1},{id:'soul_harvest',name:'Soul Harvest',max:1},
+      {id:'void_collapse',name:'Void Collapse',max:1}
+    ]},
+    { cluster:'Key Passives', nodes:[
+      {id:'dark_convergence',name:'Dark Convergence',max:1},{id:'suffering_feeds',name:'Suffering Feeds',max:1},
+      {id:'void_touched',name:'Void Touched',max:1}
+    ]}
+  ]
+};
+
+// Paragon board layout (21x21 grid with node types)
+// n=normal, m=magic, r=rare, l=legendary, g=glyph, s=start, _=empty
+function genParagonLayout() {
+  const size = 21;
+  const types = ['n','n','n','n','n','m','m','m','r','r','l'];
+  const grid = [];
+  for (let row=0; row<size; row++) {
+    const r = [];
+    for (let col=0; col<size; col++) {
+      const d = Math.sqrt(Math.pow(row-10,2)+Math.pow(col-10,2));
+      if (d > 10.5) { r.push('_'); continue; }
+      if (row===10 && col===10) { r.push('s'); continue; }
+      if ((row===5&&col===10)||(row===15&&col===10)||(row===10&&col===5)||(row===10&&col===15)) { r.push('g'); continue; }
+      r.push(types[Math.floor(Math.random()*types.length)]);
+    }
+    grid.push(r);
+  }
+  return grid;
+}
+
+// Mercenaries
+const MERCS = [
+  { id:'raheir', name:'Raheir', role:'Tank — Shield Bearer', icon:'🛡', skills:[
+    {id:'rally',name:'Rally',desc:'Rallies to your side when you take heavy damage'},{id:'shield_charge',name:'Shield Charge',desc:'Charges enemies stunning them'},{id:'fortify',name:'Fortify Ally',desc:'Grants you Fortify when you are low'}
+  ]},
+  { id:'aldkin', name:'Aldkin', role:'Damage — Demon Child', icon:'😈', skills:[
+    {id:'curse',name:'Curse',desc:'Curses nearby enemies reducing defenses'},{id:'shadow_bolt_m',name:'Shadow Bolt',desc:'Fires shadow bolts at enemies'},{id:'dark_embrace',name:'Dark Embrace',desc:'Empowers your attacks with shadow damage'}
+  ]},
+  { id:'subo', name:'Subo', role:'Support — Outlaw Sharpshooter', icon:'🏹', skills:[
+    {id:'covering_fire',name:'Covering Fire',desc:'Provides covering fire pinning enemies'},{id:'marked_prey',name:'Marked Prey',desc:'Marks an enemy causing them to take bonus damage'},{id:'volley_m',name:'Volley',desc:'Fires a volley of arrows at grouped enemies'}
+  ]},
+  { id:'varyana', name:'Varyana', role:'Damage — Berserker', icon:'⚔', skills:[
+    {id:'berserk_m',name:'Berserk',desc:'Enters a berserk state dealing massive damage'},{id:'war_cry_m',name:'War Cry',desc:'Lets out a war cry increasing attack speed'},{id:'cleave_m',name:'Cleave',desc:'Cleaves through multiple enemies at once'}
+  ]}
+];
+
+// ── State ────────────────────────────────────────────────
+let builds = [];
+let currentBuildId = null;
+let classFilter = 'all';
+let selectedSlot = null;
+let currentBoardIdx = 0;
+let paragonLayouts = {};
+
+function getCurrentBuild() { return builds.find(b=>b.id===currentBuildId)||null; }
+
+// ── Persistence ─────────────────────────────────────────
+async function loadBuilds() {
+  try {
+    const r = await fetch(WORKER+'/builds');
+    if (r.ok) { const d=await r.json(); builds=d.builds||[]; }
+  } catch(e) {}
+  // Try localStorage fallback
+  if (!builds.length) {
+    try { builds=JSON.parse(localStorage.getItem('d4builds')||'[]'); } catch(e){}
+  }
+  renderHome();
+}
+
+async function saveBuilds() {
+  localStorage.setItem('d4builds', JSON.stringify(builds));
+  try {
+    await fetch(WORKER+'/games', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({builds:builds})
+    });
+  } catch(e) {}
+}
+
+// ── Navigation ───────────────────────────────────────────
+function showTab(tab) {
+  ['gear','tree','paragon','merc','notes'].forEach(t=>{
+    document.getElementById('view-'+t).classList.toggle('active',t===tab);
+    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+  });
+  if (tab==='tree') renderSkillTree();
+  if (tab==='paragon') renderParagon();
+  if (tab==='merc') renderMerc();
+  if (tab==='notes') {
+    const b=getCurrentBuild();
+    document.getElementById('notes-textarea').value=b?b.notes||'':'';
+  }
+}
+
+function goHome() {
+  currentBuildId=null; selectedSlot=null;
+  document.getElementById('view-home').classList.add('active');
+  ['gear','tree','paragon','merc','notes'].forEach(t=>document.getElementById('view-'+t).classList.remove('active'));
+  document.getElementById('topbar-nav').style.display='none';
+  document.getElementById('btn-back').style.display='none';
+  document.getElementById('btn-new-build').style.display='';
+  document.getElementById('topbar-build-name').textContent='';
+  document.getElementById('status-text').textContent='D4 Build Manager · Season 7';
+  renderHome();
+}
+
+function openBuild(id) {
+  currentBuildId=id;
+  const b=getCurrentBuild();
+  if(!b) return;
+  document.getElementById('view-home').classList.remove('active');
+  document.getElementById('view-gear').classList.add('active');
+  ['gear','tree','paragon','merc','notes'].forEach(t=>document.getElementById('tab-'+t).classList.toggle('active',t==='gear'));
+  document.getElementById('topbar-nav').style.display='flex';
+  document.getElementById('btn-back').style.display='';
+  document.getElementById('btn-new-build').style.display='none';
+  document.getElementById('topbar-build-name').textContent=b.name+' · '+b.season;
+  document.getElementById('status-text').textContent=b.name+' · '+b.class+' · '+b.season;
+  renderGearSlots();
+  renderSkillsBar();
+  currentBoardIdx=0;
+}
+
+// ── Home ─────────────────────────────────────────────────
+function setClassFilter(cls) {
+  classFilter=cls;
+  document.querySelectorAll('.class-btn').forEach(btn=>{
+    btn.classList.toggle('active',btn.dataset.class===cls);
+  });
+  renderHome();
+}
+
+function renderHome() {
+  const filtered = classFilter==='all' ? builds : builds.filter(b=>b.class===classFilter);
+  document.getElementById('builds-title').textContent = classFilter==='all'?'All Builds':classFilter+' Builds';
+  const grid=document.getElementById('builds-grid');
+  if(!filtered.length) {
+    grid.innerHTML='<div class="empty-state"><div class="empty-state-title">No Builds Yet</div><div class="empty-state-sub">Create your first build using the button above</div></div>';
+    return;
+  }
+  grid.innerHTML=filtered.map(b=>`
+    <div class="build-card" onclick="openBuild('${b.id}')">
+      <div class="build-card-icon" style="background:${CLASS_COLORS[b.class]||'rgba(198,40,40,0.1)'}">${CLASS_ICONS[b.class]||'⚔'}</div>
+      <div class="build-card-info">
+        <div class="build-card-name">${esc(b.name)}</div>
+        <div class="build-card-meta">${b.class} · ${b.season} · ${countGearSlots(b)} slots filled</div>
+      </div>
+      <div class="build-card-season">${b.season}</div>
+      <div class="build-card-actions">
+        <div class="icon-btn danger" onclick="deleteBuild(event,'${b.id}')">✕</div>
+      </div>
+    </div>`).join('');
+}
+
+function countGearSlots(b) {
+  if(!b.gear) return '0/10';
+  const filled=Object.values(b.gear).filter(s=>s&&s.name).length;
+  return filled+'/10';
+}
+
+function deleteBuild(e,id) {
+  e.stopPropagation();
+  builds=builds.filter(b=>b.id!==id);
+  saveBuilds(); renderHome();
+  showToast('Build deleted');
+}
+
+// ── New Build Modal ──────────────────────────────────────
+function openNewBuildModal() {
+  document.getElementById('modal-overlay').classList.add('open');
+  document.getElementById('modal-build-name').value='';
+  setTimeout(()=>document.getElementById('modal-build-name').focus(),100);
+}
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+function handleModalClick(e) { if(e.target===document.getElementById('modal-overlay')) closeModal(); }
+
+function createBuild() {
+  const name=document.getElementById('modal-build-name').value.trim();
+  const cls=document.getElementById('modal-class').value;
+  const season=document.getElementById('modal-season').value;
+  if(!name) { showToast('Please enter a build name'); return; }
+  const build = {
+    id: Date.now().toString(), name, class:cls, season,
+    gear:{}, skills:Array(6).fill(null),
+    skillPoints:{}, notes:'',
+    paragonBoards:[{id:'1',name:'Starting Board',glyph:'',nodes:{}}],
+    merc:null, mercSkills:{}
+  };
+  builds.push(build);
+  saveBuilds();
+  closeModal();
+  openBuild(build.id);
+  showToast('Build created!');
+}
+
+// ── Gear & Skills ────────────────────────────────────────
+const GEAR_SLOTS = ['helm','chest','gloves','pants','boots','weapon','offhand','amulet','ring1','ring2','seal','rune1','rune2','shard1','shard2'];
+
+function renderGearSlots() {
+  const b=getCurrentBuild();
+  if(!b) return;
+  GEAR_SLOTS.forEach(slot=>{
+    const el=document.getElementById('slot-'+slot);
+    const nameEl=document.getElementById('slot-'+slot+'-name');
+    if(!el||!nameEl) return;
+    const data=b.gear&&b.gear[slot];
+    if(data&&data.name) {
+      nameEl.textContent=data.name; nameEl.className='gear-slot-name';
+      el.classList.add('filled');
+    } else {
+      nameEl.textContent='Empty'; nameEl.className='gear-slot-name empty';
+      el.classList.remove('filled');
+    }
+    el.classList.toggle('selected', selectedSlot===slot);
+  });
+}
+
+function renderSkillsBar() {
+  const b=getCurrentBuild();
+  if(!b) return;
+  const grid=document.getElementById('skills-grid');
+  grid.innerHTML=Array.from({length:6},(_,i)=>{
+    const sk=b.skills&&b.skills[i];
+    return `<div class="skill-slot${sk?' filled':''}" onclick="selectSkill(${i})">
+      <div class="skill-slot-icon">${sk?'⚡':'+'}</div>
+      <div class="skill-slot-name">${sk?esc(sk.name):'Empty'}</div>
+    </div>`;
+  }).join('');
+}
+
+function selectSlot(slot) {
+  selectedSlot=slot;
+  renderGearSlots();
+  renderSlotDetail(slot);
+}
+
+function renderSlotDetail(slot) {
+  const b=getCurrentBuild();
+  if(!b) return;
+  const data=(b.gear&&b.gear[slot])||{name:'',implicit:'',affixes:['','','',''],greater:'',tempering:''};
+  const slotLabels={helm:'Helm',chest:'Chest Armor',gloves:'Gloves',pants:'Pants',boots:'Boots',weapon:'Weapon',offhand:'Offhand',amulet:'Amulet',ring1:'Ring 1',ring2:'Ring 2',seal:'Seal',rune1:'Rune 1',rune2:'Rune 2',shard1:'Soul Shard 1',shard2:'Soul Shard 2'};
+  document.getElementById('gear-detail-panel').innerHTML=`
+    <div class="item-detail-panel">
+      <div class="section-title">${slotLabels[slot]||slot}</div>
+      <div style="margin-bottom:10px">
+        <div class="eyebrow" style="margin-bottom:5px">Item Name</div>
+        <input class="input-field" id="item-name-input" type="text" value="${esc(data.name||'')}" placeholder="e.g. Flickerstep" oninput="saveSlotField('name',this.value)"/>
+      </div>
+      <div style="margin-bottom:10px">
+        <div class="eyebrow" style="margin-bottom:5px">Implicit</div>
+        <input class="input-field" id="item-implicit" type="text" value="${esc(data.implicit||'')}" placeholder="Implicit affix..." oninput="saveSlotField('implicit',this.value)" style="font-style:italic"/>
+      </div>
+      <div style="margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <div class="eyebrow" style="margin-bottom:0">Affixes</div>
+          <div class="tempering-badge">Greater Affix</div>
+        </div>
+        <div style="background:var(--gold3);border:1px solid rgba(212,168,75,0.2);padding:6px 10px;margin-bottom:4px">
+          <textarea class="affix-edit" id="affix-greater" rows="1" placeholder="★ Greater affix..." oninput="saveAffixField('greater',this.value)">${esc(data.greater||'')}</textarea>
+        </div>
+        ${[0,1,2,3].map(i=>`
+        <div style="padding:6px 10px;border:1px solid var(--border2);margin-bottom:3px;background:var(--bg3)">
+          <textarea class="affix-edit" id="affix-${i}" rows="1" placeholder="Affix ${i+1}..." oninput="saveAffixField(${i},this.value)">${esc((data.affixes&&data.affixes[i])||'')}</textarea>
+        </div>`).join('')}
+      </div>
+      <div>
+        <div class="eyebrow" style="margin-bottom:5px">Tempering</div>
+        <input class="input-field" id="item-tempering" type="text" value="${esc(data.tempering||'')}" placeholder="Tempering affix..." oninput="saveSlotField('tempering',this.value)"/>
+      </div>
+    </div>`;
+}
+
+function saveSlotField(field, val) {
+  const b=getCurrentBuild();
+  if(!b||!selectedSlot) return;
+  if(!b.gear) b.gear={};
+  if(!b.gear[selectedSlot]) b.gear[selectedSlot]={affixes:['','','','']};
+  b.gear[selectedSlot][field]=val;
+  renderGearSlots();
+  saveBuilds();
+}
+
+function saveAffixField(idx, val) {
+  const b=getCurrentBuild();
+  if(!b||!selectedSlot) return;
+  if(!b.gear) b.gear={};
+  if(!b.gear[selectedSlot]) b.gear[selectedSlot]={affixes:['','','','']};
+  if(!b.gear[selectedSlot].affixes) b.gear[selectedSlot].affixes=['','','',''];
+  if(idx==='greater') b.gear[selectedSlot].greater=val;
+  else b.gear[selectedSlot].affixes[idx]=val;
+  saveBuilds();
+}
+
+function selectSkill(idx) {
+  const b=getCurrentBuild();
+  if(!b) return;
+  const name=prompt('Skill name (leave blank to clear):');
+  if(name===null) return;
+  if(!b.skills) b.skills=Array(6).fill(null);
+  b.skills[idx]=name.trim()?{name:name.trim()}:null;
+  renderSkillsBar(); saveBuilds();
+}
+
+// ── Skill Tree ───────────────────────────────────────────
+function renderSkillTree() {
+  const b=getCurrentBuild();
+  if(!b) return;
+  const tree=SKILL_TREES[b.class]||[];
+  if(!b.skillPoints) b.skillPoints={};
+  let totalPts=0;
+  Object.values(b.skillPoints).forEach(v=>totalPts+=v);
+
+  // Sidebar
+  let sidebarHTML='';
+  tree.forEach(cluster=>{
+    sidebarHTML+=`<div class="tree-cluster-label">${cluster.cluster}</div>`;
+    cluster.nodes.forEach(node=>{
+      const pts=b.skillPoints[node.id]||0;
+      const active=pts>0;
+      const maxed=pts>=node.max;
+      sidebarHTML+=`<div class="tree-node-pill${maxed?' maxed':active?' active':''}" onclick="cycleSkillPts('${node.id}',${node.max})">
+        <div class="tree-node-name">${esc(node.name)}</div>
+        <div class="tree-pts-badge">${pts}/${node.max}</div>
+      </div>`;
+    });
+  });
+  sidebarHTML+=`<div class="tree-pts-total">${totalPts} pts allocated</div>`;
+  document.getElementById('tree-sidebar').innerHTML=sidebarHTML;
+
+  // SVG tree
+  renderTreeSVG(b, tree);
+}
+
+function cycleSkillPts(id, max) {
+  const b=getCurrentBuild();
+  if(!b) return;
+  if(!b.skillPoints) b.skillPoints={};
+  const cur=b.skillPoints[id]||0;
+  b.skillPoints[id]=(cur>=max)?0:cur+1;
+  saveBuilds(); renderSkillTree();
+}
+
+function renderTreeSVG(b, tree) {
+  const nodeR=22, hGap=100, vGap=80;
+  const cols=4;
+  let nodes=[], edges=[];
+  let row=0;
+  tree.forEach((cluster,ci)=>{
+    cluster.nodes.forEach((node,ni)=>{
+      const col=ni%cols;
+      if(ni>0&&col===0) row++;
+      const x=60+col*hGap;
+      const y=50+row*vGap+(ci>0?20:0);
+      nodes.push({...node, x, y, pts:b.skillPoints&&b.skillPoints[node.id]||0, cluster:cluster.cluster});
+      if(ni>0) {
+        const prev=nodes[nodes.length-2];
+        if(prev.cluster===cluster.cluster) edges.push({x1:prev.x,y1:prev.y,x2:x,y2:y});
+      }
+    });
+    row++;
+  });
+  const maxY=Math.max(...nodes.map(n=>n.y))+60;
+  const maxX=Math.max(...nodes.map(n=>n.x))+60;
+  const svgW=Math.max(500,maxX);
+  const svgH=Math.max(400,maxY);
+
+  let svgHTML=`<svg viewBox="0 0 ${svgW} ${svgH}" width="${svgW}" height="${svgH}" xmlns="http://www.w3.org/2000/svg" style="display:block">`;
+  edges.forEach(e=>{
+    svgHTML+=`<line x1="${e.x1}" y1="${e.y1}" x2="${e.x2}" y2="${e.y2}" stroke="rgba(180,60,40,0.2)" stroke-width="1.5"/>`;
+  });
+  nodes.forEach(n=>{
+    const active=n.pts>0;
+    const maxed=n.pts>=n.max;
+    const isUlt=n.cluster==='Ultimate';
+    const isKey=n.cluster==='Key Passives';
+    const fill=maxed?'rgba(212,168,75,0.22)':active?'rgba(212,168,75,0.12)':'rgba(180,60,40,0.06)';
+    const stroke=maxed?'rgba(212,168,75,0.6)':active?'rgba(212,168,75,0.35)':'rgba(180,60,40,0.2)';
+    const textColor=maxed?'rgba(212,168,75,0.95)':active?'rgba(212,168,75,0.7)':'rgba(180,120,80,0.4)';
+    const r=isUlt||isKey?nodeR+4:nodeR;
+    if(isUlt) {
+      svgHTML+=`<polygon points="${n.x},${n.y-r} ${n.x+r},${n.y} ${n.x},${n.y+r} ${n.x-r},${n.y}" fill="${fill}" stroke="${stroke}" stroke-width="1.5" style="cursor:pointer" onclick="cycleSkillPts('${n.id}',${n.max})"/>`;
+    } else {
+      svgHTML+=`<circle cx="${n.x}" cy="${n.y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="1.5" style="cursor:pointer" onclick="cycleSkillPts('${n.id}',${n.max})"/>`;
+    }
+    const shortName=n.name.split(' ').slice(0,2).join(' ');
+    svgHTML+=`<text x="${n.x}" y="${n.y-4}" text-anchor="middle" font-size="7" fill="${textColor}" font-family="monospace" style="pointer-events:none">${shortName.substring(0,10)}</text>`;
+    svgHTML+=`<text x="${n.x}" y="${n.y+7}" text-anchor="middle" font-size="8" fill="${textColor}" font-family="monospace" font-weight="500" style="pointer-events:none">${n.pts}/${n.max}</text>`;
+  });
+  svgHTML+=`</svg>`;
+  document.getElementById('tree-svg-container').innerHTML=svgHTML;
+}
+
+// ── Paragon ──────────────────────────────────────────────
+function renderParagon() {
+  const b=getCurrentBuild();
+  if(!b) return;
+  if(!b.paragonBoards||!b.paragonBoards.length) {
+    b.paragonBoards=[{id:'1',name:'Starting Board',glyph:'',nodes:{}}];
+  }
+  if(!paragonLayouts[currentBuildId]) paragonLayouts[currentBuildId]={};
+
+  // Board list
+  document.getElementById('board-list').innerHTML=b.paragonBoards.map((board,i)=>`
+    <div class="board-card${i===currentBoardIdx?' active':''}" onclick="selectBoard(${i})">
+      <div class="board-num">${i+1}</div>
+      <div class="board-info">
+        <div class="board-name-text">${esc(board.name||'Board '+(i+1))}</div>
+        <div class="board-glyph-text">${board.glyph?'Glyph: '+esc(board.glyph):'No glyph'}</div>
+      </div>
+    </div>`).join('');
+
+  renderBoardGrid();
+}
+
+function selectBoard(idx) {
+  currentBoardIdx=idx;
+  renderParagon();
+}
+
+function addBoard() {
+  const b=getCurrentBuild();
+  if(!b) return;
+  if(!b.paragonBoards) b.paragonBoards=[];
+  const name=prompt('Board name:','New Board');
+  if(!name) return;
+  b.paragonBoards.push({id:Date.now().toString(),name,glyph:'',nodes:{}});
+  currentBoardIdx=b.paragonBoards.length-1;
+  saveBuilds(); renderParagon();
+}
+
+function deleteBoard() {
+  const b=getCurrentBuild();
+  if(!b||!b.paragonBoards) return;
+  if(b.paragonBoards.length<=1) { showToast('Cannot remove the last board'); return; }
+  b.paragonBoards.splice(currentBoardIdx,1);
+  currentBoardIdx=Math.max(0,currentBoardIdx-1);
+  saveBuilds(); renderParagon();
+}
+
+function saveGlyph() {
+  const b=getCurrentBuild();
+  if(!b||!b.paragonBoards) return;
+  b.paragonBoards[currentBoardIdx].glyph=document.getElementById('paragon-glyph-input').value;
+  saveBuilds();
+  document.querySelectorAll('.board-glyph-text')[currentBoardIdx].textContent=
+    b.paragonBoards[currentBoardIdx].glyph?'Glyph: '+b.paragonBoards[currentBoardIdx].glyph:'No glyph';
+}
+
+function renderBoardGrid() {
+  const b=getCurrentBuild();
+  if(!b||!b.paragonBoards) return;
+  const board=b.paragonBoards[currentBoardIdx];
+  if(!board) return;
+
+  document.getElementById('paragon-board-title').textContent=board.name||'Board '+(currentBoardIdx+1);
+  document.getElementById('paragon-glyph-input').value=board.glyph||'';
+
+  // Get or generate layout
+  if(!paragonLayouts[currentBuildId]) paragonLayouts[currentBuildId]={};
+  if(!paragonLayouts[currentBuildId][board.id]) {
+    paragonLayouts[currentBuildId][board.id]=genParagonLayout();
+  }
+  const layout=paragonLayouts[currentBuildId][board.id];
+  const nodes=board.nodes||{};
+  const activeCount=Object.values(nodes).filter(Boolean).length;
+
+  document.getElementById('paragon-board-stats').textContent=activeCount+' / '+layout.flat().filter(c=>c!=='_').length+' nodes';
+
+  const grid=document.getElementById('paragon-grid');
+  grid.style.gridTemplateColumns='repeat(21,20px)';
+  grid.innerHTML=layout.map((row,ri)=>row.map((type,ci)=>{
+    if(type==='_') return '<div style="width:20px;height:20px"></div>';
+    const key=ri+','+ci;
+    const active=nodes[key];
+    return `<div class="pnode ${type}${active?' active':''}" onclick="toggleParagonNode('${key}')" title="${type}"></div>`;
+  }).join('')).join('');
+}
+
+function toggleParagonNode(key) {
+  const b=getCurrentBuild();
+  if(!b||!b.paragonBoards) return;
+  const board=b.paragonBoards[currentBoardIdx];
+  if(!board.nodes) board.nodes={};
+  board.nodes[key]=!board.nodes[key];
+  saveBuilds(); renderBoardGrid();
+}
+
+// ── Mercenary ────────────────────────────────────────────
+function renderMerc() {
+  const b=getCurrentBuild();
+  if(!b) return;
+  if(!b.merc) b.merc=null;
+  if(!b.mercSkills) b.mercSkills={};
+
+  document.getElementById('merc-grid').innerHTML=MERCS.map(m=>`
+    <div class="merc-card${b.merc===m.id?' selected':''}" onclick="selectMerc('${m.id}')">
+      <div class="merc-card-icon">${m.icon}</div>
+      <div class="merc-card-name">${m.name}</div>
+      <div class="merc-card-role">${m.role}</div>
+    </div>`).join('');
+
+  const sel=MERCS.find(m=>m.id===b.merc);
+  if(sel) {
+    document.getElementById('merc-skills-section').innerHTML=`
+      <div class="section-title">${sel.name} — Skills</div>
+      ${sel.skills.map(sk=>`
+        <div class="merc-skill-row">
+          <div class="merc-skill-icon">${sel.icon}</div>
+          <div class="merc-skill-info">
+            <div class="merc-skill-name">${esc(sk.name)}</div>
+            <div class="merc-skill-desc">${esc(sk.desc)}</div>
+          </div>
+          <div class="merc-toggle${b.mercSkills[sk.id]?' on':''}" onclick="toggleMercSkill('${sk.id}')"><div class="merc-toggle-thumb"></div></div>
+        </div>`).join('')}`;
+  } else {
+    document.getElementById('merc-skills-section').innerHTML='<div style="color:var(--text3);font-style:italic;font-size:13px">Select a mercenary above</div>';
+  }
+}
+
+function selectMerc(id) {
+  const b=getCurrentBuild();
+  if(!b) return;
+  b.merc=id; saveBuilds(); renderMerc();
+}
+
+function toggleMercSkill(id) {
+  const b=getCurrentBuild();
+  if(!b) return;
+  if(!b.mercSkills) b.mercSkills={};
+  b.mercSkills[id]=!b.mercSkills[id];
+  saveBuilds(); renderMerc();
+}
+
+// ── Notes ────────────────────────────────────────────────
+function saveNotes() {
+  const b=getCurrentBuild();
+  if(!b) return;
+  b.notes=document.getElementById('notes-textarea').value;
+  saveBuilds();
+}
+
+// ── Utils ─────────────────────────────────────────────────
+function esc(s) { if(!s) return ''; return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+let toastTimer;
+function showToast(msg) {
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),2500);
+}
+
+// ── Init ─────────────────────────────────────────────────
+loadBuilds();
+</script>
+</body>
+</html>
