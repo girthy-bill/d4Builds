@@ -175,76 +175,102 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
    PARAGON VIEW
 ════════════════════════════ */
 .paragon-layout{flex:1;display:flex;overflow:hidden;}
-.paragon-sidebar{width:200px;flex-shrink:0;border-right:1px solid var(--border2);padding:14px 12px;overflow-y:auto;display:flex;flex-direction:column;}
+
+/* Sidebar */
+.paragon-sidebar{width:220px;flex-shrink:0;border-right:1px solid var(--border2);padding:14px 12px;overflow-y:auto;display:flex;flex-direction:column;}
 .paragon-sidebar::-webkit-scrollbar{width:3px;}
 .paragon-sidebar::-webkit-scrollbar-thumb{background:rgba(180,80,10,0.2);}
-.board-card{display:flex;align-items:center;gap:8px;padding:9px 10px;border:1px solid var(--border2);background:var(--bg3);margin-bottom:5px;cursor:pointer;transition:all .15s;}
+
+/* Board selector section */
+.board-selector-label{font-family:var(--font-m);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin:10px 0 6px;}
+.board-select{width:100%;background:var(--bg3);border:1px solid var(--border2);padding:7px 10px;font-family:var(--font-b);font-size:13px;color:var(--text);outline:none;cursor:pointer;margin-bottom:8px;}
+.board-select:focus{border-color:var(--gold);}
+.board-select option{background:var(--bg2);}
+
+/* Board cards */
+.board-card{display:flex;align-items:center;gap:8px;padding:9px 10px;border:1px solid var(--border2);background:var(--bg3);margin-bottom:4px;cursor:pointer;transition:all .15s;}
 .board-card:hover{border-color:var(--border);}
-.board-card.active{border-color:rgba(212,168,75,0.35);background:var(--gold3);}
-.board-num{width:22px;height:22px;border-radius:50%;background:rgba(198,40,40,0.12);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--font-m);font-size:10px;color:var(--red);flex-shrink:0;}
+.board-card.active{border-color:rgba(212,168,75,0.4);background:var(--gold3);}
+.board-num{width:20px;height:20px;border-radius:50%;background:rgba(198,40,40,0.12);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--font-m);font-size:9px;color:var(--red);flex-shrink:0;}
 .board-info{flex:1;min-width:0;}
 .board-name-text{font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.board-glyph-text{font-family:var(--font-m);font-size:9px;color:var(--text3);}
+.board-glyph-text{font-family:var(--font-m);font-size:9px;color:var(--text3);margin-top:1px;}
 .board-card.active .board-name-text{color:var(--gold);}
 
+/* Main area */
 .paragon-main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
-.paragon-board-header{padding:10px 16px;border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:12px;flex-shrink:0;background:var(--bg2);}
+.paragon-board-header{padding:8px 16px;border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:12px;flex-shrink:0;background:var(--bg2);flex-wrap:wrap;}
 .paragon-board-title{font-family:var(--font-d);font-size:14px;color:var(--gold);letter-spacing:1px;}
-.paragon-glyph-input{background:var(--bg3);border:1px solid var(--border2);padding:4px 10px;font-family:var(--font-m);font-size:11px;color:var(--text);outline:none;width:160px;}
+.paragon-glyph-input{background:var(--bg3);border:1px solid var(--border2);padding:4px 10px;font-family:var(--font-m);font-size:11px;color:var(--text);outline:none;width:150px;}
 .paragon-glyph-input:focus{border-color:var(--gold);}
 .paragon-glyph-input::placeholder{color:var(--text3);}
-.paragon-board-stats{margin-left:auto;font-family:var(--font-m);font-size:10px;color:var(--text3);}
+.paragon-stat-bar{margin-left:auto;display:flex;gap:12px;}
+.paragon-stat{font-family:var(--font-m);font-size:10px;}
+.paragon-stat span{color:var(--gold);}
 
-.paragon-grid-wrap{flex:1;overflow:auto;padding:16px;}
+/* Grid */
+.paragon-grid-wrap{flex:1;overflow:auto;padding:20px;display:flex;align-items:flex-start;justify-content:flex-start;}
 .paragon-grid-wrap::-webkit-scrollbar{width:6px;height:6px;}
 .paragon-grid-wrap::-webkit-scrollbar-thumb{background:rgba(180,80,10,0.25);}
-.paragon-grid{display:inline-grid;gap:2px;}
-.pnode{
-  width:22px;height:22px;
-  border:1px solid rgba(180,60,40,0.2);
-  cursor:pointer;transition:all .12s;
-  display:flex;align-items:center;justify-content:center;
-  font-size:8px;font-family:var(--font-m);
-  position:relative;
+.paragon-grid{display:inline-grid;gap:3px;position:relative;}
+
+/* ── Paragon nodes — single clean definition ── */
+.pnode {
+  width: 26px; height: 26px;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  cursor: pointer;
+  transition: filter .1s, transform .1s;
+  position: relative;
+  flex-shrink: 0;
 }
-.pnode:hover{ transform:scale(1.15); z-index:2; }
-/* Normal — dim red */
-.pnode.normal{ background:rgba(40,10,10,0.7); border-color:rgba(180,60,40,0.2); }
-.pnode.normal:hover{ border-color:rgba(212,168,75,0.5);background:rgba(60,20,10,0.8); }
-/* Magic — blue */
-.pnode.magic{ background:rgba(20,20,80,0.7); border-color:rgba(80,80,220,0.4); }
-.pnode.magic:hover{ border-color:rgba(120,120,255,0.7); }
-/* Rare — yellow */
-.pnode.rare{ background:rgba(60,60,0,0.7); border-color:rgba(200,200,0,0.4); }
-.pnode.rare:hover{ border-color:rgba(255,255,0,0.6); }
-/* Legendary — orange */
-.pnode.legendary{ background:rgba(80,30,0,0.7); border-color:rgba(220,120,40,0.5); }
-.pnode.legendary:hover{ border-color:rgba(255,150,50,0.8); }
-/* Glyph socket — red circle */
-.pnode.glyph{
-  border-radius:50%;
-  background:rgba(80,0,0,0.8);
-  border-color:rgba(198,40,40,0.6);
-  border-width:2px;
-  color:rgba(198,40,40,0.8);
-  font-size:9px;
+.pnode:hover { filter: brightness(2.2); transform: scale(1.18); z-index: 5; }
+
+/* Empty spacer */
+.pnode.empty { clip-path: none; background: transparent !important; cursor: default; }
+.pnode.empty:hover { filter: none; transform: none; }
+
+/* ── Inactive node colours — vivid enough to read on dark bg ── */
+.pnode.normal    { background: #5a2218; }
+.pnode.magic     { background: #1c1c6e; }
+.pnode.rare      { background: #5a5a00; }
+.pnode.legendary { background: #7a3800; }
+.pnode.glyph     {
+  background: #6e0000;
+  clip-path: circle(50%);
+  box-shadow: 0 0 6px rgba(198,40,40,0.6);
 }
-.pnode.glyph:hover{ border-color:var(--red); background:rgba(120,0,0,0.8); }
-/* Start node */
-.pnode.start{
-  border-radius:50%;
-  background:rgba(212,168,75,0.2);
-  border-color:rgba(212,168,75,0.6);
-  border-width:2px;
-  color:rgba(212,168,75,0.8);
+.pnode.gate      {
+  background: #5a4a00;
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
 }
-/* ACTIVE states — bright and obvious */
-.pnode.active.normal{ background:rgba(212,168,75,0.25); border-color:rgba(212,168,75,0.7); border-width:2px; }
-.pnode.active.magic{ background:rgba(80,80,220,0.3); border-color:rgba(120,120,255,0.8); border-width:2px; }
-.pnode.active.rare{ background:rgba(200,200,0,0.25); border-color:rgba(255,255,0,0.8); border-width:2px; }
-.pnode.active.legendary{ background:rgba(220,120,40,0.3); border-color:rgba(255,160,60,0.9); border-width:2px; }
-.pnode.active.glyph{ background:rgba(198,40,40,0.4); border-color:var(--red); border-width:2px; color:var(--red); }
-.pnode.active.start{ background:rgba(212,168,75,0.35); border-color:var(--gold); border-width:2px; }
+.pnode.start     {
+  background: #5a3800;
+  clip-path: circle(50%);
+  box-shadow: 0 0 6px rgba(212,168,75,0.5);
+}
+
+/* ── Active states — bright, clearly selected ── */
+.pnode.active.normal    { background: #c8622a; box-shadow: 0 0 7px rgba(200,98,42,0.8); }
+.pnode.active.magic     { background: #3030cc; box-shadow: 0 0 7px rgba(80,80,255,0.9); }
+.pnode.active.rare      { background: #b8b800; box-shadow: 0 0 7px rgba(220,220,0,0.9); }
+.pnode.active.legendary { background: #cc6000; box-shadow: 0 0 8px rgba(255,140,0,1); }
+.pnode.active.glyph     { background: #cc0000; box-shadow: 0 0 10px rgba(255,0,0,0.9); }
+.pnode.active.gate      { background: #a89000; box-shadow: 0 0 7px rgba(212,168,75,0.8); }
+.pnode.active.start     { background: #d4a84b; box-shadow: 0 0 8px rgba(212,168,75,1); }
+
+/* ── Tooltip ── */
+.paragon-tooltip {
+  position: fixed; z-index: 200;
+  background: #1a0e18;
+  border: 1px solid rgba(212,168,75,0.3);
+  padding: 10px 14px;
+  pointer-events: none;
+  min-width: 160px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+}
+.paragon-tooltip-type  { font-family: var(--font-m); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-bottom: 4px; }
+.paragon-tooltip-title { font-family: var(--font-d); font-size: 14px; color: var(--text); margin-bottom: 4px; letter-spacing: 0.5px; }
+.paragon-tooltip-stat  { font-family: var(--font-m); font-size: 11px; color: var(--gold); }
 
 .paragon-legend{padding:8px 16px;border-top:1px solid var(--border2);display:flex;gap:14px;flex-shrink:0;background:var(--bg2);}
 .legend-item{display:flex;align-items:center;gap:5px;font-family:var(--font-m);font-size:9px;color:var(--text3);}
@@ -353,6 +379,10 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
         <div class="class-btn" data-class="Warlock" onclick="setClassFilter('Warlock')">
           <div class="class-btn-icon" style="background:rgba(180,40,180,0.1)">🔥</div>
           <div class="class-btn-name">Warlock</div>
+        </div>
+        <div class="class-btn" data-class="Paladin" onclick="setClassFilter('Paladin')">
+          <div class="class-btn-icon" style="background:rgba(200,180,80,0.15)">🛡</div>
+          <div class="class-btn-name">Paladin</div>
         </div>
       </div>
       <div class="builds-header">
@@ -463,28 +493,63 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
   <div class="view" id="view-paragon">
     <div class="paragon-layout">
       <div class="paragon-sidebar">
-        <div class="eyebrow">Boards</div>
+        <div class="eyebrow">Your Boards</div>
         <div id="board-list"></div>
         <button class="btn-primary" style="margin-top:8px;width:100%" onclick="addBoard()">+ Add Board</button>
+        <div style="margin-top:16px">
+          <div class="board-selector-label">Available Boards</div>
+          <select class="board-select" id="available-boards-select" onchange="setAvailableBoard(this.value)">
+            <option value="">— Pick a board —</option>
+          </select>
+        </div>
+        <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border2)">
+          <div class="board-selector-label">Legend</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-m);font-size:10px;color:var(--text2)">
+              <div style="width:14px;height:14px;background:#5a2218;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);flex-shrink:0"></div>Normal
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-m);font-size:10px;color:rgba(140,140,255,0.9)">
+              <div style="width:14px;height:14px;background:#1c1c6e;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);flex-shrink:0"></div>Magic
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-m);font-size:10px;color:rgba(220,220,0,0.9)">
+              <div style="width:14px;height:14px;background:#5a5a00;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);flex-shrink:0"></div>Rare
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-m);font-size:10px;color:rgba(255,140,0,0.9)">
+              <div style="width:14px;height:14px;background:#7a3800;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);flex-shrink:0"></div>Legendary
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-m);font-size:10px;color:rgba(255,80,80,0.9)">
+              <div style="width:14px;height:14px;background:#6e0000;border-radius:50%;box-shadow:0 0 5px rgba(198,40,40,0.6);flex-shrink:0"></div>Glyph Socket
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-m);font-size:10px;color:rgba(212,168,75,0.8)">
+              <div style="width:14px;height:14px;background:#5a4a00;clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);flex-shrink:0"></div>Gate / Start
+            </div>
+            <div style="margin-top:4px;padding-top:6px;border-top:1px solid var(--border2);font-family:var(--font-m);font-size:9px;color:var(--text3)">
+              Active nodes glow brightly.<br/>Click any node to toggle.
+            </div>
+          </div>
+        </div>
       </div>
       <div class="paragon-main">
         <div class="paragon-board-header">
           <div class="paragon-board-title" id="paragon-board-title">Select a board</div>
           <input class="paragon-glyph-input" id="paragon-glyph-input" type="text" placeholder="Glyph name..." oninput="saveGlyph()"/>
-          <div class="paragon-board-stats" id="paragon-board-stats"></div>
-          <button class="btn-ghost" style="font-size:9px;padding:4px 10px" onclick="deleteBoard()">Remove</button>
+          <div class="paragon-stat-bar" id="paragon-stat-bar">
+            <div class="paragon-stat">STR <span id="pstat-str">0</span></div>
+            <div class="paragon-stat">INT <span id="pstat-int">0</span></div>
+            <div class="paragon-stat">WILL <span id="pstat-will">0</span></div>
+            <div class="paragon-stat">DEX <span id="pstat-dex">0</span></div>
+            <div class="paragon-stat" style="color:var(--text3)" id="pstat-nodes">0 nodes</div>
+          </div>
+          <button class="btn-ghost" style="font-size:9px;padding:4px 10px" onclick="openDeleteBoardModal()">Remove Board</button>
         </div>
-        <div class="paragon-grid-wrap">
+        <div class="paragon-grid-wrap" id="paragon-grid-wrap">
           <div class="paragon-grid" id="paragon-grid"></div>
         </div>
-        <div class="paragon-legend">
-          <div class="legend-item"><div class="legend-swatch" style="background:rgba(40,10,10,0.7);border-color:rgba(180,60,40,0.3)"></div>Normal</div>
-          <div class="legend-item"><div class="legend-swatch" style="background:rgba(20,20,80,0.7);border-color:rgba(80,80,220,0.5)"></div>◆ Magic</div>
-          <div class="legend-item"><div class="legend-swatch" style="background:rgba(60,60,0,0.7);border-color:rgba(200,200,0,0.5)"></div>★ Rare</div>
-          <div class="legend-item"><div class="legend-swatch" style="background:rgba(80,30,0,0.7);border-color:rgba(220,120,40,0.6)"></div>◈ Legendary</div>
-          <div class="legend-item"><div class="legend-swatch" style="background:rgba(80,0,0,0.8);border-color:rgba(198,40,40,0.6);border-radius:50%"></div>⬡ Glyph</div>
-          <div class="legend-item"><div class="legend-swatch" style="background:rgba(212,168,75,0.25);border-color:rgba(212,168,75,0.7)"></div>Active</div>
-        </div>
+      </div>
+      <div class="paragon-tooltip" id="paragon-tooltip" style="display:none">
+        <div class="paragon-tooltip-type" id="tt-type"></div>
+        <div class="paragon-tooltip-title" id="tt-title"></div>
+        <div class="paragon-tooltip-stat" id="tt-stat"></div>
       </div>
     </div>
   </div>
@@ -530,6 +595,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;back
         <option value="Rogue">Rogue</option>
         <option value="Spiritborn">Spiritborn</option>
         <option value="Warlock">Warlock</option>
+        <option value="Paladin">Paladin</option>
       </select>
     </div>
     <div class="modal-field">
@@ -573,13 +639,13 @@ const BUILDS_KEY = 'd4builds';
 // ── Class data ────────────────────────────────────────
 const CLASS_ICONS = {
   Barbarian:'⚔',Sorcerer:'🔮',Druid:'🌿',Necromancer:'💀',
-  Rogue:'🗡',Spiritborn:'🦅',Warlock:'🔥'
+  Rogue:'🗡',Spiritborn:'🦅',Warlock:'🔥',Paladin:'🛡'
 };
 const CLASS_COLORS = {
   Barbarian:'rgba(198,40,40,0.15)',Sorcerer:'rgba(212,168,75,0.15)',
   Druid:'rgba(80,180,80,0.12)',Necromancer:'rgba(140,80,200,0.12)',
   Rogue:'rgba(80,200,180,0.1)',Spiritborn:'rgba(200,140,40,0.12)',
-  Warlock:'rgba(180,40,180,0.1)'
+  Warlock:'rgba(180,40,180,0.1)',Paladin:'rgba(200,180,80,0.15)'
 };
 
 // ── Skill trees ────────────────────────────────────────
@@ -804,46 +870,99 @@ const SKILL_TREES = {
   ]
 };
 
-// Paragon board layout (21x21 grid with node types)
-// n=normal, m=magic, r=rare, l=legendary, g=glyph, s=start, _=empty
-function genParagonLayout(seed) {
-  // Seeded random so board is always the same for a given board id
+// ── Real paragon board names per class ──────────────────
+const PARAGON_BOARDS = {
+  Barbarian: ['Starter','Blood Rage','Bone Breaker','Carnage','Decimator','Flawless Technique','Force of Nature','Hemorrhage','Warbringer','Weapons Master'],
+  Sorcerer:  ['Starter','Burning Instinct','Ceaseless Conduit','Elemental Summoner','Enchantment Master','Frigid Fate','Fundamental Release','Icefall','Searing Heat','Static Surge'],
+  Druid:     ['Starter','Ancestral Guidance','Constricting Tendrils','Earthen Devastation','Heightened Malice','Inner Beast','Lust for Carnage','Survival Instincts','Thunderstruck','Untamed'],
+  Necromancer:['Starter','Blood Begets Blood','Bloodbath','Bone Graft','Cult Leader','Flesh-eater','Frailty','Hulking Monstrosity','Scent of Death','Wither'],
+  Rogue:     ['Starter','Cheap Shot','Cunning Stratagem','Danse Macabre','Deadly Ambush','Eldritch Bounty','Exploit Weakness',"Leyrana's Instinct",'No Witnesses','Tricks of the Trade'],
+  Spiritborn:['Starter','Bitter Medicine','Convergence','Drive','In-Fighter',"Prodigy's Tempo",'Revealing','Spiney Skin','Viscous Shield'],
+  Warlock:   ['Starter','Chaos','Demonic Spicules','Dominion','Dynamism','Fathomless','Greater Hex','Overmind','Pyrosis','Ritualism'],
+  Paladin:   ['Starter','Beacon','Castle','Divinity','Endure','Fervent','Preacher','Relentless','Sentencing','Shield Bearer'],
+};
+
+// ── Paragon board generation ─────────────────────────────
+// Generates a realistic D4-style cross-shaped board
+// Each board has: 1 legendary, 6 rare, 1 glyph, 4 gates, ~20 magic, rest normal
+// Stats: n=normal, m=magic, r=rare, l=legendary, g=glyph, s=start/gate, _=empty
+// Stat types for normal nodes: 0=STR, 1=INT, 2=WILL, 3=DEX
+const NODE_STATS = {
+  n: (seed,r,c) => {
+    const s=(seed+(r*31+c*17))%4;
+    return ['+5 Strength','+5 Intelligence','+5 Willpower','+5 Dexterity'][s];
+  },
+  m: (seed,r,c) => {
+    const magicStats=[
+      '+Life','Armor','All Resistance','Damage Reduction','Critical Strike Chance',
+      'Critical Strike Damage','Vulnerable Damage','Overpower Damage',
+      'Core Skill Damage','Attack Speed','Cooldown Reduction','Resource Generation',
+      'Barrier Generation','Crowd Control Duration','Fortify Generation',
+    ];
+    return magicStats[(seed+(r*13+c*7))%magicStats.length];
+  },
+  r: () => 'Rare Node — see game for full bonus',
+  l: (name) => name + ' (Legendary Node)',
+  g: () => 'Glyph Socket',
+  s: () => '+5 All Attributes (Gate)',
+};
+
+function genParagonLayout(seed, boardName) {
   let s = seed || 12345;
-  function rand() { s = (s * 1103515245 + 12345) & 0x7fffffff; return s / 0x7fffffff; }
+  function rng() { s=(s*1103515245+12345)&0x7fffffff; return s/0x7fffffff; }
 
-  const size = 21;
-  const cx = 10, cy = 10;
-  const grid = [];
+  const SIZE=21, CX=10, CY=10;
 
-  // Pre-define special node positions for a realistic D4-like board
-  const glyphPos = [[3,10],[10,3],[10,17],[17,10]]; // 4 glyph sockets
-  const legendaryPos = [[5,5],[5,15],[15,5],[15,15],[2,10],[10,2],[18,10],[10,18]]; // legendary nodes
-  const rarePos = [[7,7],[7,13],[13,7],[13,13],[4,10],[10,4],[16,10],[10,16],[7,10],[10,7],[13,10],[10,13]];
-  const magicPos = [];
-  // Generate magic nodes scattered throughout
-  for(let r=0;r<size;r++) for(let c=0;c<size;c++) {
-    if((r+c)%3===0 && rand()<0.4) magicPos.push([r,c]);
+  // D4 boards are cross-shaped: full rows in middle, shorter at top/bottom
+  // This creates a diamond/cross shape similar to real D4
+  function inBounds(r,c) {
+    const dx=Math.abs(c-CX), dy=Math.abs(r-CY);
+    return dx+dy <= 10; // diamond shape
+  }
+
+  // Fixed special positions (consistent across all boards)
+  const GLYPH    = [CY, CX]; // center
+  const LEGENDARY= [[CY-4, CX],[CY+4, CX],[CY, CX-4],[CY, CX+4]]; // pick 1
+  const legIdx   = seed % LEGENDARY.length;
+  const LEG_POS  = LEGENDARY[legIdx];
+  // Gates at edges
+  const GATES = [[CY-10,CX],[CY+10,CX],[CY,CX-10],[CY,CX+10]];
+  // 6 rare nodes scattered around
+  const RARE_CANDIDATES = [
+    [CY-3,CX-3],[CY-3,CX+3],[CY+3,CX-3],[CY+3,CX+3],
+    [CY-6,CX],[CY+6,CX],[CY,CX-6],[CY,CX+6],
+    [CY-4,CX-2],[CY-4,CX+2],[CY+4,CX-2],[CY+4,CX+2],
+  ];
+  // Pick 6 rare nodes using seed
+  const RARES = [];
+  const shuffled=[...RARE_CANDIDATES].sort(()=>rng()-0.5);
+  for(let i=0;i<6&&i<shuffled.length;i++) RARES.push(shuffled[i]);
+
+  // Magic nodes — seeded scatter
+  const MAGIC=[];
+  for(let r=0;r<SIZE;r++) for(let c=0;c<SIZE;c++) {
+    if(!inBounds(r,c)) continue;
+    if(rng()<0.18) MAGIC.push([r,c]);
   }
 
   function nodeType(r,c) {
-    if(r===cx&&c===cy) return 's';
-    if(glyphPos.some(p=>p[0]===r&&p[1]===c)) return 'g';
-    if(legendaryPos.some(p=>p[0]===r&&p[1]===c)) return 'l';
-    if(rarePos.some(p=>p[0]===r&&p[1]===c)) return 'r';
-    if(magicPos.some(p=>p[0]===r&&p[1]===c)) return 'm';
+    if(r===CY&&c===CX) return 'g';
+    if(GATES.some(p=>p[0]===r&&p[1]===c)) return 's';
+    if(r===LEG_POS[0]&&c===LEG_POS[1]) return 'l';
+    if(RARES.some(p=>p[0]===r&&p[1]===c)) return 'r';
+    if(MAGIC.some(p=>p[0]===r&&p[1]===c)) return 'm';
     return 'n';
   }
 
-  for (let row=0; row<size; row++) {
-    const r = [];
-    for (let col=0; col<size; col++) {
-      const d = Math.sqrt(Math.pow(row-cx,2)+Math.pow(col-cy,2));
-      if (d > 10.2) { r.push('_'); continue; }
-      r.push(nodeType(row,col));
+  const grid=[];
+  for(let row=0;row<SIZE;row++) {
+    const r=[];
+    for(let col=0;col<SIZE;col++) {
+      r.push(inBounds(row,col)?nodeType(row,col):'_');
     }
     grid.push(r);
   }
-  return grid;
+  return {grid, boardName, seed};
 }
 
 // Mercenaries
@@ -1304,9 +1423,17 @@ function renderParagon() {
   const b=getCurrentBuild();
   if(!b) return;
   if(!b.paragonBoards||!b.paragonBoards.length) {
-    b.paragonBoards=[{id:'1',name:'Starting Board',glyph:'',nodes:{}}];
+    b.paragonBoards=[{id:'start_1',name:'Starter',glyph:'',nodes:{}}];
   }
   if(!paragonLayouts[currentBuildId]) paragonLayouts[currentBuildId]={};
+
+  // Populate available boards dropdown from real class data
+  const avail=document.getElementById('available-boards-select');
+  if(avail) {
+    const classBoards=PARAGON_BOARDS[b.class]||[];
+    avail.innerHTML='<option value="">— Add a board —</option>'+
+      classBoards.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('');
+  }
 
   // Board list
   document.getElementById('board-list').innerHTML=b.paragonBoards.map((board,i)=>`
@@ -1314,11 +1441,23 @@ function renderParagon() {
       <div class="board-num">${i+1}</div>
       <div class="board-info">
         <div class="board-name-text">${esc(board.name||'Board '+(i+1))}</div>
-        <div class="board-glyph-text">${board.glyph?'Glyph: '+esc(board.glyph):'No glyph'}</div>
+        <div class="board-glyph-text">${board.glyph?'⬡ '+esc(board.glyph):'No glyph'}</div>
       </div>
     </div>`).join('');
 
   renderBoardGrid();
+}
+
+function setAvailableBoard(name) {
+  if(!name) return;
+  const b=getCurrentBuild();
+  if(!b) return;
+  if(!b.paragonBoards) b.paragonBoards=[];
+  if(b.paragonBoards.length>=6){ showToast('Maximum 6 boards per build'); return; }
+  b.paragonBoards.push({id:'board_'+Date.now(),name,glyph:'',nodes:{}});
+  currentBoardIdx=b.paragonBoards.length-1;
+  document.getElementById('available-boards-select').value='';
+  saveBuilds(); renderParagon();
 }
 
 function selectBoard(idx) {
@@ -1330,29 +1469,38 @@ function addBoard() {
   const b=getCurrentBuild();
   if(!b) return;
   if(!b.paragonBoards) b.paragonBoards=[];
-  const name=prompt('Board name:','New Board');
+  if(b.paragonBoards.length>=6){ showToast('Maximum 6 boards'); return; }
+  const name=prompt('Custom board name:','Custom Board');
   if(!name) return;
-  b.paragonBoards.push({id:Date.now().toString(),name,glyph:'',nodes:{}});
+  b.paragonBoards.push({id:'board_'+Date.now(),name,glyph:'',nodes:{}});
   currentBoardIdx=b.paragonBoards.length-1;
   saveBuilds(); renderParagon();
 }
 
-function deleteBoard() {
+function openDeleteBoardModal() {
   const b=getCurrentBuild();
   if(!b||!b.paragonBoards) return;
-  if(b.paragonBoards.length<=1) { showToast('Cannot remove the last board'); return; }
+  if(b.paragonBoards.length<=1){ showToast('Cannot remove the last board'); return; }
+  const board=b.paragonBoards[currentBoardIdx];
+  if(!confirm('Remove board "'+board.name+'"? All node selections on this board will be lost.')) return;
   b.paragonBoards.splice(currentBoardIdx,1);
   currentBoardIdx=Math.max(0,currentBoardIdx-1);
   saveBuilds(); renderParagon();
 }
+
+// keep old name for any stale references
+function deleteBoard() { openDeleteBoardModal(); }
 
 function saveGlyph() {
   const b=getCurrentBuild();
   if(!b||!b.paragonBoards) return;
   b.paragonBoards[currentBoardIdx].glyph=document.getElementById('paragon-glyph-input').value;
   saveBuilds();
-  document.querySelectorAll('.board-glyph-text')[currentBoardIdx].textContent=
-    b.paragonBoards[currentBoardIdx].glyph?'Glyph: '+b.paragonBoards[currentBoardIdx].glyph:'No glyph';
+  const cards=document.querySelectorAll('.board-glyph-text');
+  if(cards[currentBoardIdx]) {
+    const g=b.paragonBoards[currentBoardIdx].glyph;
+    cards[currentBoardIdx].textContent=g?'⬡ '+g:'No glyph';
+  }
 }
 
 function renderBoardGrid() {
@@ -1364,24 +1512,62 @@ function renderBoardGrid() {
   document.getElementById('paragon-board-title').textContent=board.name||'Board '+(currentBoardIdx+1);
   document.getElementById('paragon-glyph-input').value=board.glyph||'';
 
-  // Get or generate layout
+  // Generate layout if needed
   if(!paragonLayouts[currentBuildId]) paragonLayouts[currentBuildId]={};
   if(!paragonLayouts[currentBuildId][board.id]) {
-    paragonLayouts[currentBuildId][board.id]=genParagonLayout();
+    const seed=board.id.split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+    paragonLayouts[currentBuildId][board.id]=genParagonLayout(seed, board.name);
   }
-  const layout=paragonLayouts[currentBuildId][board.id];
+  const {grid}=paragonLayouts[currentBuildId][board.id];
   const nodes=board.nodes||{};
-  const activeCount=Object.values(nodes).filter(Boolean).length;
 
-  document.getElementById('paragon-board-stats').textContent=activeCount+' / '+layout.flat().filter(c=>c!=='_').length+' nodes';
-
-  const grid=document.getElementById('paragon-grid');
-  grid.style.gridTemplateColumns='repeat(21,20px)';
-  grid.innerHTML=layout.map((row,ri)=>row.map((type,ci)=>{
-    if(type==='_') return '<div style="width:20px;height:20px"></div>';
+  // Tally stats from active nodes
+  const stats={str:0,int:0,will:0,dex:0,count:0,total:0};
+  grid.forEach((row,ri)=>row.forEach((type,ci)=>{
+    if(type==='_') return;
+    stats.total++;
     const key=ri+','+ci;
-    const active=nodes[key];
-    return `<div class="pnode ${type}${active?' active':''}" onclick="toggleParagonNode('${key}')" title="${type}"></div>`;
+    if(!nodes[key]) return;
+    stats.count++;
+    if(type==='n'||type==='s') {
+      const seed2=board.id.split('').reduce((a,x)=>a+x.charCodeAt(0),0);
+      const s=(seed2+(ri*31+ci*17))%4;
+      if(s===0) stats.str+=5;
+      else if(s===1) stats.int+=5;
+      else if(s===2) stats.will+=5;
+      else stats.dex+=5;
+    }
+  }));
+
+  const statBar=document.getElementById('paragon-stat-bar');
+  if(statBar) statBar.innerHTML=
+    `<div class="paragon-stat">STR <span>${stats.str}</span></div>`+
+    `<div class="paragon-stat">INT <span>${stats.int}</span></div>`+
+    `<div class="paragon-stat">WILL <span>${stats.will}</span></div>`+
+    `<div class="paragon-stat">DEX <span>${stats.dex}</span></div>`+
+    `<div class="paragon-stat" style="color:var(--text3)">${stats.count} / ${stats.total} nodes</div>`;
+
+  // Build grid HTML
+  const typeNames={n:'Normal',m:'Magic',r:'Rare',l:'Legendary',g:'Glyph Socket',s:'Gate'};
+  const pgrid=document.getElementById('paragon-grid');
+  pgrid.style.gridTemplateColumns='repeat(21,28px)';
+  pgrid.style.gap='3px';
+
+  pgrid.innerHTML=grid.map((row,ri)=>row.map((type,ci)=>{
+    if(type==='_') return '<div class="pnode empty"></div>';
+    const key=ri+','+ci;
+    const active=nodes[key]?'active':'';
+    const seed2=board.id.split('').reduce((a,x)=>a+x.charCodeAt(0),0);
+    let stat='';
+    if(type==='n') stat=NODE_STATS.n(seed2,ri,ci);
+    else if(type==='m') stat=NODE_STATS.m(seed2,ri,ci);
+    else if(type==='g') stat='Glyph Socket';
+    else if(type==='l') stat=board.name+' (Legendary)';
+    else if(type==='s') stat='+5 All Attributes';
+    else stat='Rare Node';
+    const ttType=typeNames[type]||type;
+    const safestat=stat.replace(/'/g,'&apos;');
+    return `<div class="pnode ${type} ${active}" onclick="toggleParagonNode('${key}')" onmouseenter="showNodeTooltip(event,'${ttType}','${safestat}')" onmouseleave="hideNodeTooltip()"></div>`;
   }).join('')).join('');
 }
 
@@ -1391,7 +1577,31 @@ function toggleParagonNode(key) {
   const board=b.paragonBoards[currentBoardIdx];
   if(!board.nodes) board.nodes={};
   board.nodes[key]=!board.nodes[key];
+  if(!board.nodes[key]) delete board.nodes[key];
   saveBuilds(); renderBoardGrid();
+}
+
+function showNodeTooltip(e, type, stat) {
+  const tt=document.getElementById('paragon-tooltip');
+  if(!tt) return;
+  const typeColors={
+    'Normal':'rgba(180,120,80,0.6)','Magic':'rgba(100,100,255,0.8)',
+    'Rare':'rgba(220,220,0,0.8)','Legendary':'rgba(255,140,0,0.9)',
+    'Glyph Socket':'rgba(198,40,40,0.9)','Gate':'rgba(212,168,75,0.7)'
+  };
+  document.getElementById('tt-type').textContent=type.toUpperCase();
+  document.getElementById('tt-type').style.color=typeColors[type]||'var(--text3)';
+  document.getElementById('tt-title').textContent=
+    type==='Normal'?'Common Node':type==='Glyph Socket'?'Glyph Socket':type+' Node';
+  document.getElementById('tt-stat').textContent=stat;
+  tt.style.display='block';
+  tt.style.left=(e.clientX+16)+'px';
+  tt.style.top=(e.clientY-10)+'px';
+}
+
+function hideNodeTooltip() {
+  const tt=document.getElementById('paragon-tooltip');
+  if(tt) tt.style.display='none';
 }
 
 // ── Mercenary ────────────────────────────────────────────
